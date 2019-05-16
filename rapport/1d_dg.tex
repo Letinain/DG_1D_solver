@@ -7,9 +7,10 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{caption}
-\usepackage[french]{babel}
+\usepackage[english]{babel}
 \usepackage[T1]{fontenc}
 \usepackage[pdftex]{graphicx}
+\usepackage{ stmaryrd }
 
 \usepackage{hyperref}
 
@@ -19,4 +20,88 @@
 
 \begin{document}
  \maketitle
+ 
+ \section{Problem}
+ 
+ We consider the following problem:
+ 
+ \begin{equation} \label{eq:initial}
+  \alpha u - \mu \Delta u = f
+ \end{equation}
+
+ on the interval $\Omega = ]a,b[$ with one of the three following boundary conditions:
+ \begin{itemize}
+  \item Dirichlet conditions: $u(a) = u_a^D$ and $u(b) = u_b^D$;
+  \item Neumann conditions: $u'(a) = u_a^N$ and $u'(b) = u_b^N$;
+  \item Mixed conditions: $u(a) + \gamma_a u'(a) = u_a^M$ and $u(b) + \gamma_b u'(b) = u_b^M$.
+ \end{itemize}
+
+ \section{Discontinuous discretization}
+ 
+ To discretize the problem we will follow some step:
+ \begin{enumerate}
+  \item weak formulation of the problem compatible with the method
+  \item writing of the basic matrix
+  \item implementation
+ \end{enumerate}
+ 
+ The goal of this report is simple: give a little overview of the DG method with understandable but 
+extendable notations.
+
+ \subsection{Weak formulation}
+ 
+ Let be a subdivision $a = x_0 < x_1 < \dots < x_{K-1} < x_K = b$ of I. We write $C_n = 
+]x_{n-1},x_n[$, so that we have $K$ cells, and $\mathcal{E}_h = \{ C_n \}$ where $h = \max 
+\limits_{n} |C_n|$.
+ 
+ We consider the broken Sobolev space, highly depending on the subdivision of the domain (see 
+Riviere):
+ \begin{equation}
+  H^1(\mathcal{E}_h) := \{ v \in L^2(\Omega) \quad that \quad \forall E \in \mathcal{E}_h, v|_E \in 
+H^1(E) \}
+ \end{equation}
+
+ Denote that $H^1(\Omega) \subset H^1(\mathcal{E}_h)$.
+ 
+ \paragraph{}
+ The strong idea of discontinuous Galerkin method is to approximate the problem, not with an 
+approximation of $H^1(\Omega)$ as for continuous Galerkin method, but with an approximation of 
+$H^1(\mathcal{E}_h)$.
+
+
+\paragraph{}
+Let be $v \in H^1(\mathcal{E}_h)$, and multiply \ref{eq:initial} by it and then use Green formula 
+(also known as integration by parts in 1D). We take care that Green formula works only on each cell:
+
+\begin{equation}
+ \sum \limits_{n=1}^K \int_{C_n} (\mu u'v' + \alpha uv) d\omega - \mu [u'(x)v(x)]_{x_{n-1}}^{x_n} = 
+\sum \limits_{n=1}^K \int_{C_n}  f\ v\ d\omega
+\end{equation}
+
+Here exists different methods in the literature. In Riviere, terms are added to create a bi-linear 
+symmetric coercive and continuous form on left side and a linear conituous form on the right side, 
+so that you can prove existence and uniqueness with functional analysis theorems. The approach is 
+very interesting in the theorical way, but complicated for just a simple implementation.
+
+On the other hand, you can use the following approach, which is less general, but more 
+understandable as first view of the subject:
+
+\paragraph{}
+Because $v \in H^1(\mathcal{E}_h)$, we assume $u \in H^1(\mathcal{E}_h)$ for the resolution of the 
+problem, but we want equality of the solution on the commun edges of each cell, wich means we have 
+a bad-defined value at $u'(x_n)$ in our case, wich is the \emph{numerical flux}.
+
+A solution consists on assuming that numerical flux equals one unique value:
+
+$$
+\widehat{\nabla u(x)} = \frac{\beta}{2} \llbracket u \rrbracket + \overline{\nabla u(x)}
+$$
+
+where the definition of the different term are given in Armand's paper p.15.
+
+\subsection{$H^1(\mathcal{E}_h)$ discretization}
+
+ 
+ 
+ 
 \end{document}
