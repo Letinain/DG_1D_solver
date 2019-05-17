@@ -224,42 +224,103 @@ part. This the most complicated term, and the one wich will be treated here with
 Let be an interior element. In our case, that means we consider $C_k = [x_{k-1},x_k]$ with $1<k<K$. 
 Then we have
 \begin{align*}
- \int_{\partial C_n} \widehat{\nabla u} \cdot \mathbf{n}\ v\ d\gamma &= \int_{\partial C_n} 
-\left(\frac{\beta}{2} \llbracket u \rrbracket + \overline{\nabla u(x)} \cdot \mathbf{n}\right)\ v\ 
-d\gamma \\
-&= \int_{\partial C_n} \left(\frac{\beta}{2} (u^+ + u^-) + \frac{1}{2} (\nabla u^+ + \nabla u^-)
-\cdot \mathbf{n}\right)\ v\ d\gamma \\
+ \int_{\partial C_n} \widehat{\nabla u}_k \cdot \mathbf{n}_k\ v\ d\gamma &= \int_{\partial C_n} 
+\left(\frac{\beta}{2} \llbracket u \rrbracket_k + \overline{\nabla u(x)} \cdot \mathbf{n}_k 
+\right)\ v\ d\gamma \\
+&= \int_{\partial C_n} \left(\frac{\beta}{2} (u^+_k + u^-_k) + \frac{1}{2} (\nabla u^+_k + \nabla 
+u^-_k) \cdot \mathbf{n}_k \right)\ v\ d\gamma \\
 \end{align*}
 
 This last equality can be rewritten in 1D as
-\begin{multline*}
- \int_{\partial C_n} \widehat{\nabla u} \cdot \mathbf{n}\ v\ d\gamma = \left(\frac{\beta}{2} 
-(u^+(x_k) + u^-(x_k)) + \frac{1}{2} \left(\frac{d}{dx} u^+(x_k) + \frac{d}{dx} u^-(x_k)\right) 
-\mathbf{n}(x_k) \right)\ v(x_k) \ + \\
-\left(\frac{\beta}{2} (u^+(x_{k-1}) + u^-(x_{k-1})) + \frac{1}{2} \left(\frac{d}{dx} u^+(x_{k-1}) + 
-\frac{d}{dx} u^-(x_{k-1})\right)\mathbf{n}(x_{k-1}) \right)\ v(x_{k-1})
-\end{multline*}
+\begin{align*}
+ \int_{\partial C_n} \widehat{\nabla u}_k \cdot \mathbf{n}_k\ v\ d\gamma &= \widehat{\nabla 
+u}_k(x_k) \cdot \mathbf{n}_k(x_k)\ v(x_k) + \widehat{\nabla u}_k(x_k) \cdot \mathbf{n}_k(x_k)\ 
+v(x_k)\\
+ &=\left(\frac{\beta}{2} (u^+_k(x_k) - u^-_k(x_k)) + \frac{1}{2} \left(\frac{d}{dx} u^+_k(x_k) + 
+\frac{d}{dx} u^-_k(x_k)\right) \mathbf{n}_k(x_k) \right)\ v(x_k) \ + \\
+& \left(\frac{\beta}{2} (u^+_k(x_{k-1}) - u^-_k(x_{k-1})) + \frac{1}{2} \left(\frac{d}{dx} 
+u^+_k(x_{k-1}) + \frac{d}{dx} u^-_k(x_{k-1})\right)\mathbf{n}_k(x_{k-1}) \right)\ v(x_{k-1})
+\end{align*}
 
 The differences between the two parts are the point of application and sign in front of the the 
 average derivative, due to the normal direction.
 
+Then we have to estimate a lot of values: $u^\pm_k$, $\nabla u^\pm_k$ and $\mathbf{n}_k$.
 
+\subparagraph{$u^\pm_k$:}
+We have
+\begin{align*}
+ u^+_k(x_k) = \sum_{n=0}^N u_n^k \varphi_n^k(x_k) &= \sum_{n=0}^N u_n^k \hat \varphi_n(1) \\
+ u^-_k(x_k) = \sum_{n=0}^N u_n^{k+1} \varphi_n^{k+1}(x_k) &= \sum_{n=0}^N u_n^{k+1} \hat 
+\varphi_n(-1)
+\end{align*}
+and
+\begin{align*}
+ u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^k \varphi_n^k(x_{k-1}) &= \sum_{n=0}^N u_n^k \hat \varphi_n(-1) 
+\\
+ u^-_k(x_{k-1}) = \sum_{n=0}^N u_n^{k-1} \varphi_n^{k-1}(x_{k-1}) &= \sum_{n=0}^N u_n^{k-1} \hat 
+\varphi_n(1)
+\end{align*}
 
+\subparagraph{$\nabla u^\pm_k$:} We have
+\begin{align*}
+ \nabla u^+_k(x_k) = \sum_{n=0}^N u_n^k \nabla \varphi_n^k(x_k) &= \nabla F_k \sum_{n=0}^N 
+u_n^k \nabla \hat \varphi_n(1) \\
+\nabla u^+_k(x_k) = \sum_{n=0}^N u_n^{k+1} \nabla \varphi_n^{k+1}(x_k) &= \nabla F_{k+1} 
+\sum_{n=0}^N u_n^{k+1} \nabla \hat \varphi_n(-1)
+\end{align*}
+and
+\begin{align*}
+ \nabla u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^k \nabla \varphi_n^k(x_{k-1}) &= \nabla F_k \sum_{n=0}^N 
+u_n^k \nabla \hat \varphi_n(-1) \\
+\nabla u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^{k-1} \nabla \varphi_n^{k-1}(x_{k-1}) &= \nabla F_{k-1} 
+\sum_{n=0}^N 
+u_n^{k-1} \nabla \hat \varphi_n(1)
+\end{align*}
 
+\subparagraph{$\mathbf{n}_k$:} We simply have $\mathbf{n}_k(x_k) = 1$ and $\mathbf{n}_k(x_{k-1}) = 
+-1$.
 
+\paragraph{}
 
+Then, for $j=0,\dots,N$,
+\begin{multline*}
+ \widehat{\nabla u}_k(x_k) \cdot \mathbf{n}_k(x_k)\ \varphi_j^k(x_k) 
+ = \Bigg[ \frac{\beta}{2} \left( \sum_{n=0}^N u_n^k \hat \varphi_n(1) - \sum_{n=0}^N u_n^{k+1} 
+\hat 
+\varphi_n(-1) \right) 
+\\+ \frac{1}{2} \left(\nabla F_k \sum_{n=0}^N u_n^k \nabla \hat \varphi_n(1) + \nabla F_{k+1} 
+\sum_{n=0}^N u_n^{k+1} \nabla \hat \varphi_n(-1) \right) \cdot \mathbf{n}_k(x_k) \Bigg] 
+\hat \varphi_j(1)
+\end{multline*}
+wich can be easily translated as vector product between a row matrix and $U$.
 
+\paragraph{flux at the bound}
+The flux at the bound is not complicated at all if we consider there is a virtual cell where the 
+solution has the good properties. For example, with Dirichlet conditions, we consider that:
+\begin{itemize}
+ \item the virtual solution equals zero on the bound, which means $\llbracket u \rrbracket = u^+ $,
+ \item the virtual solution has the same derivative on the bound than the real solution, wich means 
+$\overline{\nabla u} = \nabla u^+$.
+\end{itemize}
 
-% The goal is to write properly $\widehat{\nabla u(x)}$ in one dimension. So we have to explicit 
-% $u^\pm (x_{k-1})$, $u^\pm (x_{k})$ and $u^\pm \ '(x_{k-1})$, $u^\pm \ '(x_{k})$. The terms with + 
-% are the interior terms, wich means 
-% \begin{align*}
-%  u^+ (x) = 
-% \end{align*}
+\paragraph{}
+At the end wa assembly all the flux matrix $\mathbb{F}$ and we obtain a system of this shape:
+\begin{equation}
+\left(\alpha \mathbb{M} + \mu (\mathbb{S}-\mathbb{F})\right) U = F
+\end{equation}
+Then, to obtqin $U$, we just have to invert the matrix $\alpha \mathbb{M} + \mu 
+(\mathbb{S}-\mathbb{F})$ wich is not easy with high dimension, even with iterative algorithm. An 
+idea of efficient iterative algorithm could be biconjugate gradient algorithm.
 
+\subsection{The Legendre polynomials}
 
+The purpose of this part is to exploit Armand's results on the legendre polynomials for the 
+construction of the differents matrices.
 
-
+\subsubsection{Mass matrix}
+By their definition, the legendre polynomials are orthogonals for the scalar product 
+$\int_{-1}^1 uv dx$. So, the reference mass matrix is just identity matrix.
 
 
 \end{document}
