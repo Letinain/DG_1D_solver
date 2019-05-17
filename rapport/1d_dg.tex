@@ -11,6 +11,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[pdftex]{graphicx}
 \usepackage{ stmaryrd }
+\usepackage{fullpage}
 
 \usepackage{hyperref}
 
@@ -52,7 +53,7 @@ extendable notations.
  
  Let be a subdivision $a = x_0 < x_1 < \dots < x_{K-1} < x_K = b$ of I. We write $C_n = 
 ]x_{n-1},x_n[$, so that we have $K$ cells, and $\mathcal{E}_h = \{ C_n \}$ where $h = \max 
-\limits_{n} |C_n|$.
+\limits_{n} |C_n|$. We also note $h_n = |C_n| = x_n - x_{n-1}$.
  
  We consider the broken Sobolev space, highly depending on the subdivision of the domain (see 
 Riviere):
@@ -73,8 +74,9 @@ $H^1(\mathcal{E}_h)$.
 Let be $v \in H^1(\mathcal{E}_h)$, and multiply \ref{eq:initial} by it and then use Green formula 
 (also known as integration by parts in 1D). We take care that Green formula works only on each cell:
 
-\begin{equation}
- \sum \limits_{n=1}^K \int_{C_n} (\mu u'v' + \alpha uv) d\omega - \mu [u'(x)v(x)]_{x_{n-1}}^{x_n} = 
+\begin{equation}\label{eq:weak}
+ \sum \limits_{n=1}^K \int_{C_n} (\mu \nabla u \nabla v + \alpha uv) d\omega - \int_{\partial C_n} 
+\mu \nabla u \cdot \mathbf{n}\ v\ d\gamma = 
 \sum \limits_{n=1}^K \int_{C_n}  f\ v\ d\omega
 \end{equation}
 
@@ -88,20 +90,176 @@ understandable as first view of the subject:
 
 \paragraph{}
 Because $v \in H^1(\mathcal{E}_h)$, we assume $u \in H^1(\mathcal{E}_h)$ for the resolution of the 
-problem, but we want equality of the solution on the commun edges of each cell, wich means we have 
+problem, but we want equality of the solution on the common edges of each cell, wich means we have 
 a bad-defined value at $u'(x_n)$ in our case, wich is the \emph{numerical flux}.
 
-A solution consists on assuming that numerical flux equals one unique value:
+A solution consists on assuming numerical flux equals one unique value on cell frontiers:
 
 $$
-\widehat{\nabla u(x)} = \frac{\beta}{2} \llbracket u \rrbracket + \overline{\nabla u(x)}
+\widehat{\nabla u(x)} = \frac{\beta}{2} \llbracket u \rrbracket\mathbf{n} + \overline{\nabla u(x)} 
+= \frac{\beta}{2} (u^+(x) - u^-(x)) \mathbf{n} + \frac{\nabla u^+(x) + \nabla u^-(x)}{2}
 $$
 
 where the definition of the different term are given in Armand's paper p.15.
 
+
+\paragraph{TRUE section}
+\begin{itshape}
+ Finally, because $v \in H^1(\mathcal{E}_h)$, we have this equality for each elements:
+
+$$
+\int_{C_n} (\mu \nabla u \nabla v + \alpha uv) d\omega - \int_{\partial C_n} \mu \nabla u \cdot 
+\mathbf{n}\ v\ d\gamma = \int_{C_n}  f\ v\ d\omega
+$$
+\end{itshape}
+
+
 \subsection{$H^1(\mathcal{E}_h)$ discretization}
 
- 
- 
- 
+ $H^1(\mathcal{E}_h)$ discretization is quite similar with the discretization of $H^1(\Omega)$. Let 
+be a cell $C_k \in \mathcal{E}_h$, then consider $(\varphi_n^k)_{n=0,\dots,N}$ a basis of 
+polynomials of degree $N$ on $C_k$. We assume $\varphi_n^k|_{C_k^c}=0$.
+
+\paragraph{}
+We call $\mathcal{D}_N(\mathcal{E}_h) = \mathrm{span}\{ \varphi_n^k ,\ 0\leq n \leq N,\ 1\leq k 
+\leq K \}$ the approximation of $H^1(\mathcal{E}_h)$. Then we have to choose the type of basis 
+function. Here is some possibilities:
+\begin{itemize}
+ \item monomial functions,
+ \item lagrangian functions,
+ \item legendrian functions.
+\end{itemize}
+
+Obviously, each basis function is the image of a basis function on a reference element composed 
+with an affine map. For 1D case, the reference element will be the segment $\hat E = [-1,1]$. Then 
+the affine map will be:
+
+\begin{equation*}
+\begin{array}{cccc}
+ F_E^{-1} : & [-1,1] & \longrightarrow & [a,b] \\
+            & x & \longmapsto & \frac{b-a}{2} x + \frac{a+b}{2}
+\end{array}
+\text{ and }
+\begin{array}{cccc}
+ F_E : & [a,b] & \longrightarrow & [-1,1] \\
+            & y & \longmapsto & \frac{2}{b-a} \left(y - \frac{a+b}{2}\right)
+\end{array}
+\end{equation*}
+
+ With this map, we now just have to describe the basis functions on the reference element to have 
+every basis functions we need. So we define the basis functions on the reference element by $\hat 
+\varphi_n$ for $n= 0, \dots , N$ and then we can write $\varphi_n^k = \hat 
+\varphi_n \circ F_k$
+
+\subsection{discretization on each cell}
+
+In this part, we assume $u \in \mathcal{D}_N(\mathcal{E}_h)$ and it can be decomposed as:
+
+$$
+u = \sum_{k=1}^K u^k = \sum_{k=1}^K \sum_{n=0}^N u_n^k \varphi_n^k
+$$
+
+where $\forall n,k,\ u_n^k \in \mathbb{R}$.
+
+
+Then we can inject $u$ in the equation \ref{eq:weak}. Then we define $U^k = 
+(u_0^k, \dots , u_N^k)^\top$ and $U = [U^1, \dots , U^K]^\top$. The next idea is to project the 
+equation \ref{eq:weak} on $\mathcal{D}_N(\mathcal{E}_h)$.
+
+\subsubsection{right term}
+
+The right term of the equation is the easiest part of the discretization: we define $F = [F^1, 
+\dots , F^K]^\top$ and $F^k = 
+(f_0^k, \dots , f_N^k)^\top$ where $f_i^k = \int_{C_k} f \varphi_i^k d\omega$.
+
+
+
+\subsubsection{discretization of the mass and stiffness term}
+
+Consider $\int_{C_k} (\mu u'v' + \alpha uv) d\omega$, and take $v = \varphi_n^k$. Then 
+we can discretize this integral by
+
+\begin{equation}
+ \left( \alpha \mathbb{M}^k + \mu \mathbb{S}^k  \right) U^k
+\end{equation}
+
+where $\mathbb{M}^k_{i,j} = \int_{C_k} \varphi_i^k \varphi_j^k d\omega$ and $\mathbb{S}_{i,j}^k =
+\int_{C_k} \nabla \varphi_i^k \nabla \varphi_j^k d\omega$
+
+Because $\varphi_n^k = \hat 
+\varphi_n \circ F_k$, we have:
+
+\begin{equation*}
+ \mathbb{M}^k_{i,j} = \int_{C_k} \varphi_i^k \varphi_j^k d\omega = \int_{\hat E} \hat \varphi_i 
+\hat \varphi_j d\omega \cdot |\mathrm{det}(\nabla F_k^{-1})| = |\mathrm{det}(\nabla F_k^{-1})| 
+{\widehat{\mathbb{M}}}_{i,j}
+\end{equation*}
+and
+\begin{align*}
+ \mathbb{S}_{i,j}^k &= \int_{C_k} \nabla \varphi_i^k \nabla \varphi_j^k d\omega = 
+|\mathrm{det}(\nabla F_k^{-1})| {\nabla F_k}^\top \int_{\hat E} \nabla \hat \varphi_i \nabla \hat 
+\varphi_j d\omega \nabla F_k \\
+&= |\mathrm{det}(\nabla F_k^{-1})| {\nabla F_k}^\top 
+\widehat{\mathbb{S}}_{i,j} \nabla F_k
+\end{align*}
+
+Of course, those formulae simplify a lot in 1D, but those are general and will be reused. But the 
+one dimension gives:
+\begin{equation*}
+ \mathbb{M}^k_{i,j} = \frac{h_k}{2} {\widehat{\mathbb{M}}}_{i,j} \qquad \text{and} \qquad
+ \mathbb{S}_{i,j}^k = \frac{2}{h_k} \widehat{\mathbb{S}}_{i,j}
+\end{equation*}
+
+Finally, we obtain $(\alpha \mathbb{M} + \mu \mathbb{S})U$ where $\mathbb{M} = \mathrm{diag} ( 
+\mathbb{M}^1, \dots, \mathbb{M}^K)$ and  $\mathbb{S} = \mathrm{diag} 
+(\mathbb{S}^1,\dots,\mathbb{S}^K)$.
+
+\subsubsection{Flux discretization}
+
+In the same way than Armand's report, we define $\mathbb{F}$ as the matrix describing the flux 
+part. This the most complicated term, and the one wich will be treated here with less generality.
+
+\paragraph{flux between interior elements}
+
+Let be an interior element. In our case, that means we consider $C_k = [x_{k-1},x_k]$ with $1<k<K$. 
+Then we have
+\begin{align*}
+ \int_{\partial C_n} \widehat{\nabla u} \cdot \mathbf{n}\ v\ d\gamma &= \int_{\partial C_n} 
+\left(\frac{\beta}{2} \llbracket u \rrbracket + \overline{\nabla u(x)} \cdot \mathbf{n}\right)\ v\ 
+d\gamma \\
+&= \int_{\partial C_n} \left(\frac{\beta}{2} (u^+ + u^-) + \frac{1}{2} (\nabla u^+ + \nabla u^-)
+\cdot \mathbf{n}\right)\ v\ d\gamma \\
+\end{align*}
+
+This last equality can be rewritten in 1D as
+\begin{multline*}
+ \int_{\partial C_n} \widehat{\nabla u} \cdot \mathbf{n}\ v\ d\gamma = \left(\frac{\beta}{2} 
+(u^+(x_k) + u^-(x_k)) + \frac{1}{2} \left(\frac{d}{dx} u^+(x_k) + \frac{d}{dx} u^-(x_k)\right) 
+\mathbf{n}(x_k) \right)\ v(x_k) \ + \\
+\left(\frac{\beta}{2} (u^+(x_{k-1}) + u^-(x_{k-1})) + \frac{1}{2} \left(\frac{d}{dx} u^+(x_{k-1}) + 
+\frac{d}{dx} u^-(x_{k-1})\right)\mathbf{n}(x_{k-1}) \right)\ v(x_{k-1})
+\end{multline*}
+
+The differences between the two parts are the point of application and sign in front of the the 
+average derivative, due to the normal direction.
+
+
+
+
+
+
+
+
+% The goal is to write properly $\widehat{\nabla u(x)}$ in one dimension. So we have to explicit 
+% $u^\pm (x_{k-1})$, $u^\pm (x_{k})$ and $u^\pm \ '(x_{k-1})$, $u^\pm \ '(x_{k})$. The terms with + 
+% are the interior terms, wich means 
+% \begin{align*}
+%  u^+ (x) = 
+% \end{align*}
+
+
+
+
+
+
 \end{document}
