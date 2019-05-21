@@ -117,11 +117,11 @@ $$
 \subsection{$H^1(\mathcal{E}_h)$ discretization}
 
  $H^1(\mathcal{E}_h)$ discretization is quite similar with the discretization of $H^1(\Omega)$. Let 
-be a cell $C_k \in \mathcal{E}_h$, then consider $(\varphi_n^k)_{n=0,\dots,N}$ a basis of 
-polynomials of degree $N$ on $C_k$. We assume $\varphi_n^k|_{C_k^c}=0$.
+be a cell $C_k \in \mathcal{E}_h$, then consider $(\phi_n^k)_{n=0,\dots,N}$ a basis of 
+polynomials of degree $N$ on $C_k$. We assume $\phi_n^k|_{C_k^c}=0$.
 
 \paragraph{}
-We call $\mathcal{D}_N(\mathcal{E}_h) = \mathrm{span}\{ \varphi_n^k ,\ 0\leq n \leq N,\ 1\leq k 
+We call $\mathcal{D}_N(\mathcal{E}_h) = \mathrm{span}\{ \phi_n^k ,\ 0\leq n \leq N,\ 1\leq k 
 \leq K \}$ the approximation of $H^1(\mathcal{E}_h)$. Then we have to choose the type of basis 
 function. Here is some possibilities:
 \begin{itemize}
@@ -131,32 +131,47 @@ function. Here is some possibilities:
 \end{itemize}
 
 Obviously, each basis function is the image of a basis function on a reference element composed 
-with an affine map. For 1D case, the reference element will be the segment $\hat E = [-1,1]$. Then 
+with an affine map. We call $E$ the physical element and $\hat E$ the reference element, and
+\begin{equation*}
+ F_E : E \longrightarrow \hat E \qquad \text{and} \qquad  F_E^{-1} : \hat E \longrightarrow  E
+\end{equation*}
+the affine maps between $E$ and $\hat E$.
+
+Since those maps are affine, we have $|\mathrm{det}(\mathrm{D}F_E^{-1})| = 
+|\mathrm{det}(\mathrm{D}F_E)|^{-1} = \dfrac{|E|}{|\hat E|}$.
+
+We also express physical basis functions with reference basis functions with the formula 
+\begin{equation*}
+ \phi_i^E = \sqrt{\dfrac{|\hat E|}{|E|}}\ \hat \phi_i \circ F_E
+\end{equation*}
+so that $\|\phi_i^E\|_{L^2(E)}=1$ and $\|\hat \phi_i^E\|_{L^2(E)}=1$.
+
+For 1D case, the reference element will be the segment $\hat E = [-1,1]$. Then 
 the affine map will be:
 
 \begin{equation*}
 \begin{array}{cccc}
- F_E^{-1} : & [-1,1] & \longrightarrow & [a,b] \\
-            & x & \longmapsto & \frac{b-a}{2} x + \frac{a+b}{2}
+ F_k^{-1} : & [-1,1] & \longrightarrow & [x_{k-1},x_k] \\
+            & x & \longmapsto & \dfrac{h_k}{2} x + \dfrac{x_{k-1}+x_k}{2}
 \end{array}
 \text{ and }
 \begin{array}{cccc}
- F_E : & [a,b] & \longrightarrow & [-1,1] \\
-            & y & \longmapsto & \frac{2}{b-a} \left(y - \frac{a+b}{2}\right)
+ F_k : & [a,b] & \longrightarrow & [-1,1] \\
+            & y & \longmapsto & \dfrac{2}{h_k} \left(y - \dfrac{x_{k-1}+x_k}{2}\right)
 \end{array}
 \end{equation*}
 
  With this map, we now just have to describe the basis functions on the reference element to have 
 every basis functions we need. So we define the basis functions on the reference element by $\hat 
-\varphi_n$ for $n= 0, \dots , N$ and then we can write $\varphi_n^k = \hat 
-\varphi_n \circ F_k$
+\phi_n$ for $n= 0, \dots , N$ and then we can write $\phi_n^k = \sqrt{\frac{2}{h_k}} \hat 
+\phi_n \circ F_k$
 
 \subsection{discretization on each cell}
 
 In this part, we assume $u \in \mathcal{D}_N(\mathcal{E}_h)$ and it can be decomposed as:
 
 $$
-u = \sum_{k=1}^K u^k = \sum_{k=1}^K \sum_{n=0}^N u_n^k \varphi_n^k
+u = \sum_{k=1}^K u^k = \sum_{k=1}^K \sum_{n=0}^N u_n^k \phi_n^k
 $$
 
 where $\forall n,k,\ u_n^k \in \mathbb{R}$.
@@ -170,44 +185,49 @@ equation \ref{eq:weak} on $\mathcal{D}_N(\mathcal{E}_h)$.
 
 The right term of the equation is the easiest part of the discretization: we define $F = [F^1, 
 \dots , F^K]^\top$ and $F^k = 
-(f_0^k, \dots , f_N^k)^\top$ where $f_i^k = \int_{C_k} f \varphi_i^k d\omega$.
+(f_0^k, \dots , f_N^k)^\top$ where $f_i^k = \int_{C_k} f \phi_i^k d\omega$.
 
 
 
 \subsubsection{discretization of the mass and stiffness term}
 
-Consider $\int_{C_k} (\mu u'v' + \alpha uv) d\omega$, and take $v = \varphi_n^k$. Then 
+Consider $\int_{C_E} (\mu \nabla u  \cdot \nabla v + \alpha uv) d\omega$, and take $v = \phi_n^E$. 
+Then 
 we can discretize this integral by
 
 \begin{equation}
- \left( \alpha \mathbb{M}^k + \mu \mathbb{S}^k  \right) U^k
+ \left( \alpha \mathbb{M}^E + \mu \mathbb{S}^E  \right) U^E
 \end{equation}
 
-where $\mathbb{M}^k_{i,j} = \int_{C_k} \varphi_i^k \varphi_j^k d\omega$ and $\mathbb{S}_{i,j}^k =
-\int_{C_k} \nabla \varphi_i^k \nabla \varphi_j^k d\omega$
+where $\mathbb{M}^E_{i,j} = \int_{C_E} \phi_i^E \phi_j^E d\omega$ and $\mathbb{S}_{i,j}^E =
+\int_{C_E} \nabla \phi_i^E \nabla \phi_j^E d\omega$
 
-Because $\varphi_n^k = \hat 
-\varphi_n \circ F_k$, we have:
+Because $\phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} \hat \phi_n \circ F_E$, we have 
+$\mathrm{D}\phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} \mathrm{D}\hat \phi_n(F_E) \circ \mathrm{D} F_E$ 
+and, confusing matrices and differential, $\nabla \phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} 
+{\mathrm{D} F_E}^\top \nabla \hat \phi_n(F_E) $:
 
 \begin{equation*}
- \mathbb{M}^k_{i,j} = \int_{C_k} \varphi_i^k \varphi_j^k d\omega = \int_{\hat E} \hat \varphi_i 
-\hat \varphi_j d\omega \cdot |\mathrm{det}(\nabla F_k^{-1})| = |\mathrm{det}(\nabla F_k^{-1})| 
-{\widehat{\mathbb{M}}}_{i,j}
+ \mathbb{M}^E_{i,j} = \int_{C_E} \phi_i^E \phi_j^E d\omega = 
+ \frac{|\hat E|}{|E|} \int_{\hat E} \hat \phi_i \hat \phi_j d\hat \omega \cdot 
+|\mathrm{det}(\mathrm{D} F_E^{-1})| = 
+\int_{\hat E} \hat \phi_i \hat \phi_j d\hat \omega =\widehat{\mathbb{M}}_{i,j}
 \end{equation*}
 and
 \begin{align*}
- \mathbb{S}_{i,j}^k &= \int_{C_k} \nabla \varphi_i^k \nabla \varphi_j^k d\omega = 
-|\mathrm{det}(\nabla F_k^{-1})| {\nabla F_k}^\top \int_{\hat E} \nabla \hat \varphi_i \nabla \hat 
-\varphi_j d\omega \nabla F_k \\
-&= |\mathrm{det}(\nabla F_k^{-1})| {\nabla F_k}^\top 
-\widehat{\mathbb{S}}_{i,j} \nabla F_k
+ \mathbb{S}_{i,j}^E &= \int_{C_E} \nabla \phi_i^E \cdot \nabla \phi_j^E d\omega = 
+\int_{\hat E} \nabla \hat \phi_i \cdot ( \mathrm{D} F_E{\mathrm{D} F_E}^\top \nabla \hat 
+\phi_j) d\hat \omega \\
+&= \left( {\mathrm{D} F_E}^\top \nabla \hat \phi_i , {\mathrm{D} F_E}^\top \nabla \hat \phi_i  
+\right)_{L^2(\hat E)}
 \end{align*}
 
 Of course, those formulae simplify a lot in 1D, but those are general and will be reused. But the 
 one dimension gives:
 \begin{equation*}
- \mathbb{M}^k_{i,j} = \frac{h_k}{2} {\widehat{\mathbb{M}}}_{i,j} \qquad \text{and} \qquad
- \mathbb{S}_{i,j}^k = \frac{2}{h_k} \widehat{\mathbb{S}}_{i,j}
+ \mathbb{M}^k_{i,j} =  {\widehat{\mathbb{M}}}_{i,j} \qquad \text{and} \qquad
+ \mathbb{S}_{i,j}^k =  \frac{4}{h_k^2} \left( \hat \phi_i' , \hat \phi_j ' 
+\right)_{L^2(]-1,1[)} = \frac{4}{h_k^2} \widehat{\mathbb{S}}_{i,j}
 \end{equation*}
 
 Finally, we obtain $(\alpha \mathbb{M} + \mu \mathbb{S})U$ where $\mathbb{M} = \mathrm{diag} ( 
@@ -221,6 +241,20 @@ part. This the most complicated term, and the one wich will be treated here with
 
 \paragraph{flux between interior elements}
 
+Let be an interior element, without common component with the boundary. Assuming that the normal 
+vector is constant by part, we can cut the integral on each part in $D$ integrals:
+
+\begin{align*}
+  \int_{\partial E} \widehat{\nabla u}_E \cdot \mathbf{n}_E\ v\ d\gamma &=
+  \sum_{d=1}^D \int_{\partial E^d} \widehat{\nabla u}_E \cdot \mathbf{n}_E^d\ v\ d\gamma \\
+  &= \sum_{d=1}^D \int_{\partial E^d} \left(\frac{\beta}{2} ({u^+}_E^d + {u^-}_E^d) + \frac{1}{2} 
+(\nabla {u^+}_E^d + \nabla {u^-}_E^d) \cdot \mathbf{n}_E^d \right)\ v\ d\gamma
+\end{align*}
+
+
+
+
+{\itshape
 Let be an interior element. In our case, that means we consider $C_k = [x_{k-1},x_k]$ with $1<k<K$. 
 Then we have
 \begin{align*}
@@ -250,32 +284,32 @@ Then we have to estimate a lot of values: $u^\pm_k$, $\nabla u^\pm_k$ and $\math
 \subparagraph{$u^\pm_k$:}
 We have
 \begin{align*}
- u^+_k(x_k) = \sum_{n=0}^N u_n^k \varphi_n^k(x_k) &= \sum_{n=0}^N u_n^k \hat \varphi_n(1) \\
- u^-_k(x_k) = \sum_{n=0}^N u_n^{k+1} \varphi_n^{k+1}(x_k) &= \sum_{n=0}^N u_n^{k+1} \hat 
-\varphi_n(-1)
+ u^+_k(x_k) = \sum_{n=0}^N u_n^k \phi_n^k(x_k) &= \sum_{n=0}^N u_n^k \hat \phi_n(1) \\
+ u^-_k(x_k) = \sum_{n=0}^N u_n^{k+1} \phi_n^{k+1}(x_k) &= \sum_{n=0}^N u_n^{k+1} \hat 
+\phi_n(-1)
 \end{align*}
 and
 \begin{align*}
- u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^k \varphi_n^k(x_{k-1}) &= \sum_{n=0}^N u_n^k \hat \varphi_n(-1) 
+ u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^k \phi_n^k(x_{k-1}) &= \sum_{n=0}^N u_n^k \hat \phi_n(-1) 
 \\
- u^-_k(x_{k-1}) = \sum_{n=0}^N u_n^{k-1} \varphi_n^{k-1}(x_{k-1}) &= \sum_{n=0}^N u_n^{k-1} \hat 
-\varphi_n(1)
+ u^-_k(x_{k-1}) = \sum_{n=0}^N u_n^{k-1} \phi_n^{k-1}(x_{k-1}) &= \sum_{n=0}^N u_n^{k-1} \hat 
+\phi_n(1)
 \end{align*}
 
 \subparagraph{$\nabla u^\pm_k$:} We have
 \begin{align*}
- \nabla u^+_k(x_k) = \sum_{n=0}^N u_n^k \nabla \varphi_n^k(x_k) &= \nabla F_k \sum_{n=0}^N 
-u_n^k \nabla \hat \varphi_n(1) \\
-\nabla u^+_k(x_k) = \sum_{n=0}^N u_n^{k+1} \nabla \varphi_n^{k+1}(x_k) &= \nabla F_{k+1} 
-\sum_{n=0}^N u_n^{k+1} \nabla \hat \varphi_n(-1)
+ \nabla u^+_k(x_k) = \sum_{n=0}^N u_n^k \nabla \phi_n^k(x_k) &= \nabla F_k \sum_{n=0}^N 
+u_n^k \nabla \hat \phi_n(1) \\
+\nabla u^+_k(x_k) = \sum_{n=0}^N u_n^{k+1} \nabla \phi_n^{k+1}(x_k) &= \nabla F_{k+1} 
+\sum_{n=0}^N u_n^{k+1} \nabla \hat \phi_n(-1)
 \end{align*}
 and
 \begin{align*}
- \nabla u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^k \nabla \varphi_n^k(x_{k-1}) &= \nabla F_k \sum_{n=0}^N 
-u_n^k \nabla \hat \varphi_n(-1) \\
-\nabla u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^{k-1} \nabla \varphi_n^{k-1}(x_{k-1}) &= \nabla F_{k-1} 
+ \nabla u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^k \nabla \phi_n^k(x_{k-1}) &= \nabla F_k \sum_{n=0}^N 
+u_n^k \nabla \hat \phi_n(-1) \\
+\nabla u^+_k(x_{k-1}) = \sum_{n=0}^N u_n^{k-1} \nabla \phi_n^{k-1}(x_{k-1}) &= \nabla F_{k-1} 
 \sum_{n=0}^N 
-u_n^{k-1} \nabla \hat \varphi_n(1)
+u_n^{k-1} \nabla \hat \phi_n(1)
 \end{align*}
 
 \subparagraph{$\mathbf{n}_k$:} We simply have $\mathbf{n}_k(x_k) = 1$ and $\mathbf{n}_k(x_{k-1}) = 
@@ -285,13 +319,13 @@ u_n^{k-1} \nabla \hat \varphi_n(1)
 
 Then, for $j=0,\dots,N$,
 \begin{multline*}
- \widehat{\nabla u}_k(x_k) \cdot \mathbf{n}_k(x_k)\ \varphi_j^k(x_k) 
- = \Bigg[ \frac{\beta}{2} \left( \sum_{n=0}^N u_n^k \hat \varphi_n(1) - \sum_{n=0}^N u_n^{k+1} 
+ \widehat{\nabla u}_k(x_k) \cdot \mathbf{n}_k(x_k)\ \phi_j^k(x_k) 
+ = \Bigg[ \frac{\beta}{2} \left( \sum_{n=0}^N u_n^k \hat \phi_n(1) - \sum_{n=0}^N u_n^{k+1} 
 \hat 
-\varphi_n(-1) \right) 
-\\+ \frac{1}{2} \left(\nabla F_k \sum_{n=0}^N u_n^k \nabla \hat \varphi_n(1) + \nabla F_{k+1} 
-\sum_{n=0}^N u_n^{k+1} \nabla \hat \varphi_n(-1) \right) \cdot \mathbf{n}_k(x_k) \Bigg] 
-\hat \varphi_j(1)
+\phi_n(-1) \right) 
+\\+ \frac{1}{2} \left(\nabla F_k \sum_{n=0}^N u_n^k \nabla \hat \phi_n(1) + \nabla F_{k+1} 
+\sum_{n=0}^N u_n^{k+1} \nabla \hat \phi_n(-1) \right) \cdot \mathbf{n}_k(x_k) \Bigg] 
+\hat \phi_j(1)
 \end{multline*}
 wich can be easily translated as vector product between a row matrix and $U$.
 
@@ -303,7 +337,7 @@ solution has the good properties. For example, with Dirichlet conditions, we con
  \item the virtual solution has the same derivative on the bound than the real solution, wich means 
 $\overline{\nabla u} = \nabla u^+$.
 \end{itemize}
-
+}
 \paragraph{}
 At the end wa assembly all the flux matrix $\mathbb{F}$ and we obtain a system of this shape:
 \begin{equation}
@@ -316,11 +350,37 @@ idea of efficient iterative algorithm could be biconjugate gradient algorithm.
 \subsection{The Legendre polynomials}
 
 The purpose of this part is to exploit Armand's results on the legendre polynomials for the 
-construction of the differents matrices.
+construction of the differents matrices. So we define $\hat \phi_i = \sqrt{\dfrac{2i+1}{2}} P_i$ 
+where $P_i$ is the i-th Legendre's polynomial.
 
 \subsubsection{Mass matrix}
 By their definition, the legendre polynomials are orthogonals for the scalar product 
 $\int_{-1}^1 uv dx$. So, the reference mass matrix is just identity matrix.
+
+\subsubsection{Stiffness matrix}
+The stiffness matrix computation is more complicated because of the derivative. With the 
+definition of basis function, we can already write:
+
+\begin{equation*}
+ \widehat{\mathbb{S}}_{i,j} = \frac{\sqrt{(2i+1)(2j+1)}}{2} \left( P_i' , P_j' \right)_{L^2(]-1,1[)}
+\end{equation*}
+
+But due to Armand, the majority part of the computation is already done: $\forall i\leq j \in 
+\mathbb{N}$
+\begin{itemize}
+ \item $\left(P_{2i}',P_{2j+1}'\right)_{L^2(]-1,1[)} = 0$
+ \item $\left(P_{2i}',P_{2j}'\right)_{L^2(]-1,1[)} = 2i(2i+1)$
+ \item $\left(P_{2i+1}',P_{2j+1}'\right)_{L^2(]-1,1[)} = 2i(2i+3)+2$
+\end{itemize}
+
+As final result, we have $\mathbb{S}_{i,j}^k = \dfrac{2}{{h_k}^2} \sqrt{(2i+1)(2j+1)} \left( P_i' , 
+P_j' \right)_{L^2(]-1,1[)} = \dfrac{2}{{h_k}^2} \mathbb{P}_{i,j}$. Note that result is consistent 
+with Armand's result (pay attention that $\|P_0\| = 2$).
+
+\subsubsection{Flux matrix}
+
+
+
 
 
 \end{document}
