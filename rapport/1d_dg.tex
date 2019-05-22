@@ -244,17 +244,76 @@ part. This the most complicated term, and the one wich will be treated here with
 Let be an interior element, without common component with the boundary. Assuming that the normal 
 vector is constant by part, we can cut the integral on each part in $D$ integrals:
 
+\begin{multline*}
+ \int_{\partial E} \widehat{\nabla u}_E \cdot \mathbf{n}_E\ v\ d\gamma 
+ = \int_{\partial E} \widehat{\nabla u}_E \cdot \mathbf{n}_E\ v\ d\gamma
+ = \int_{\partial E} \left( \frac{\beta}{2} {u^+}_E + \frac{1}{2} \nabla {u^+}_E \cdot \mathbf{n}_E 
+\right) \ v\ d\gamma \\
++ \int_{\partial E} \left( -\frac{\beta}{2} {u^-}_E + \frac{1}{2} \nabla {u^-}_E \cdot \mathbf{n}_E 
+\right) \ v\ d\gamma
+\end{multline*}
+ We call the first integral the self interaction flux and the second integral the neighbor 
+interaction flux.
+
+\subparagraph{self interaction flux} 
+Since we have
+\begin{equation*}
+ \frac{\beta}{2} {u^+}_E + \frac{1}{2} \nabla {u^+}_E \cdot \mathbf{n}_E = \sum_{j=0}^N u_j^E 
+\left( \frac{\beta}{2} \phi_j^E + \frac{1}{2} \nabla \phi_j^E \cdot \mathbf{n}_E \right)
+\end{equation*}
+the self interaction flux matrix can be written as
+\begin{equation*}
+ \mathbb{F}_{i,j}^{E,s} = \int_{\partial E} \left( \frac{\beta}{2} \phi_j^E + \frac{1}{2} \nabla 
+\phi_j^E \cdot \mathbf{n}_E \right) \phi_i^E \ d \gamma
+\end{equation*}
+
+Then we can assemble the self interaction flux matrices: $\mathbb{F}^s = {\mathrm{diag}}_{E 
+\in \mathcal{E}_h} (\mathbb{F}_{i,j}^{E,s})$.
+
+\subparagraph{neighbor interaction flux}
+Firstly, we cut the integral by faces and we call $E^d$ the neighbor of $E$ by the common face 
+$\partial E^d$:
+\begin{equation*}
+ \int_{\partial E} \left( -\frac{\beta}{2} {u^-}_E + \frac{1}{2} \nabla {u^-}_E \cdot \mathbf{n}_E 
+\right) \ v\ d\gamma = \sum_{d=1}^D \int_{\partial E^d} \left( -\frac{\beta}{2} {u^-}_E^d + 
+\frac{1}{2} \nabla {u^-}_E^d \cdot \mathbf{n}_E^d \right) \ \phi_i^E\ d\gamma
+\end{equation*}
+
+In exactly the same way than the self interaction flux, the interaction flux matrice between $E$ 
+and $E^d$ is:
+\begin{equation*}
+ \mathbb{F}_{i,j}^{E,E^d} = \int_{\partial E^d} \left( -\frac{\beta}{2} \phi_j^{E^d} + \frac{1}{2} 
+\nabla \phi_j^{E^d} \cdot \mathbf{n}_E^d \right) \phi_i^E \ d \gamma
+\end{equation*}
+
+Then we can assemble those matrices as $\mathbb{F}^E = \mathrm{row}_{E^d \in \mathcal{E}_h} 
+(\mathbb{F}^{E,E^d})$, where $\mathbb{F}^{E,E^d} = 0$ if $E$ and $E^d$ are not neighbor and 
+$\mathbb{F}^I = \mathrm{col}_{E \in \mathcal{E}_h} 
+(\mathbb{F}^E)$.
+\iffalse
+{\itshape
 \begin{align*}
   \int_{\partial E} \widehat{\nabla u}_E \cdot \mathbf{n}_E\ v\ d\gamma &=
   \sum_{d=1}^D \int_{\partial E^d} \widehat{\nabla u}_E \cdot \mathbf{n}_E^d\ v\ d\gamma \\
-  &= \sum_{d=1}^D \int_{\partial E^d} \left(\frac{\beta}{2} ({u^+}_E^d + {u^-}_E^d) + \frac{1}{2} 
+  &= \sum_{d=1}^D \int_{\partial E^d} \left(\frac{\beta}{2} ({u^+}_E^d - {u^-}_E^d) + \frac{1}{2} 
 (\nabla {u^+}_E^d + \nabla {u^-}_E^d) \cdot \mathbf{n}_E^d \right)\ v\ d\gamma
 \end{align*}
 
+The goal is to write $\int_{\partial E^d} \widehat{\nabla u}_E \cdot \mathbf{n}_E^d\ \phi_i^E \ 
+d\gamma$ as a matrices product $\mathbb{F}_i U$. We can make a separation between the terms of the 
+last integral:
+\begin{multline*}
+ \int_{\partial E^d} \widehat{\nabla u}_E \cdot \mathbf{n}_E^d\ \phi_i^E \ d\gamma
+= \int_{\partial E^d} \left( \frac{\beta}{2} {u^+}_E^d + \frac{1}{2} \nabla {u^+}_E^d \cdot 
+\mathbf{n}_E^d \right) \ \phi_i^E\ d\gamma \\
++ \int_{\partial E^d} \left( -\frac{\beta}{2} {u^-}_E^d + \frac{1}{2} \nabla {u^-}_E^d \cdot 
+\mathbf{n}_E^d \right) \ \phi_i^E\ d\gamma
+ \end{multline*}
 
 
 
-{\itshape
+
+
 Let be an interior element. In our case, that means we consider $C_k = [x_{k-1},x_k]$ with $1<k<K$. 
 Then we have
 \begin{align*}
@@ -333,17 +392,19 @@ wich can be easily translated as vector product between a row matrix and $U$.
 The flux at the bound is not complicated at all if we consider there is a virtual cell where the 
 solution has the good properties. For example, with Dirichlet conditions, we consider that:
 \begin{itemize}
- \item the virtual solution equals zero on the bound, which means $\llbracket u \rrbracket = u^+ $,
+ \item the virtual solution equals zero on the bound, →which means $\llbracket u \rrbracket = u^+ $,
  \item the virtual solution has the same derivative on the bound than the real solution, wich means 
 $\overline{\nabla u} = \nabla u^+$.
 \end{itemize}
 }
+\fi
 \paragraph{}
-At the end wa assembly all the flux matrix $\mathbb{F}$ and we obtain a system of this shape:
+At the end wa assembly all the flux matrix $\mathbb{F} = \mathbb{F}^s +\mathbb{F}^I $ and we obtain 
+a system of this shape:
 \begin{equation}
 \left(\alpha \mathbb{M} + \mu (\mathbb{S}-\mathbb{F})\right) U = F
 \end{equation}
-Then, to obtqin $U$, we just have to invert the matrix $\alpha \mathbb{M} + \mu 
+Then, to obtain $U$, we just have to invert the matrix $\alpha \mathbb{M} + \mu 
 (\mathbb{S}-\mathbb{F})$ wich is not easy with high dimension, even with iterative algorithm. An 
 idea of efficient iterative algorithm could be biconjugate gradient algorithm.
 
@@ -379,8 +440,20 @@ with Armand's result (pay attention that $\|P_0\| = 2$).
 
 \subsubsection{Flux matrix}
 
-
-
+The flux matrix is not as simple as the others. But with the one dimension, we can express it 
+easily with this remark: $P_n(1) = (-1)^n P_n(-1) = 1$. This results:
+\begin{align*}
+ u^+_k(x_k) &= \frac{1}{\sqrt{h_k}} \sum_{n=0}^N \sqrt{2n+1} u_n^k\\
+ u^-_k(x_k) &= \frac{1}{\sqrt{h_{k+1}}} \sum_{n=0}^N (-1)^n \sqrt{2n+1}\ u_n^{k+1}\\
+ \nabla u_k^+ (x_k) &= \frac{2}{{h_k}^{3/2}} \sum_{n=0}^N \sqrt{2n+1} u_n^k P_n'(1) \\
+ \nabla u_k^- (x_k) &= \frac{2}{{h_k}^{3/2}} \sum_{n=0}^N \sqrt{2n+1} u_n^{k+1} P_n'(-1)
+\end{align*}
+We need to process the values $P_n'(1)$ and $P_n'(-1)$. This is easy with Armand's work because
+\begin{align*}
+ P_{2n}' &= \sum_{i=0}^{n-1} (4i+3) P_{2i+1} \\
+ P_{2n+1}' &= 1 + \sum_{i=1}^{n} (4i+1) P_{2i}
+\end{align*}
+Then we have $P_{2n}'(1) = -P_{2n}'(-1) = n(2n+1)$ and $P_{2n+1}'(1) = P_{2n+1}'(-1) = 1 + n(2n+3)$.
 
 
 \end{document}
