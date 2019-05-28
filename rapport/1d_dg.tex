@@ -96,11 +96,18 @@ a bad-defined value at $u'(x_n)$ in our case, wich is the \emph{numerical flux}.
 A solution consists on assuming numerical flux equals one unique value on cell frontiers:
 
 $$
-\widehat{\nabla u(x)} = \frac{\beta}{2} \llbracket u \rrbracket\mathbf{n} + \overline{\nabla u(x)} 
-= \frac{\beta}{2} (u^+(x) - u^-(x)) \mathbf{n} + \frac{\nabla u^+(x) + \nabla u^-(x)}{2}
+\widehat{\nabla u(x)} \cdot \mathbf{n} = \beta \frac{\llbracket u \rrbracket}{\overline{\Delta x}} 
++ \overline{\nabla u(x)} \cdot \mathbf{n}
 $$
 
-where the definition of the different term are given in Armand's paper p.15.
+where 
+\begin{itemize}
+ \item $\llbracket u \rrbracket = u^-(x) - u^+(x)$, $u^-$ is the interior value and $u^+$ is the 
+exterior value,
+\item $\overline{\nabla u(x)} = \dfrac{\nabla u^+(x) + \nabla u^-(x)}{2} $ with the same policy,
+\item $\overline{\Delta x} = \dfrac{{\Delta x}^+ + {\Delta x}^-}{2}$ with the same policy.
+\end{itemize}
+
 
 
 \paragraph{TRUE section}
@@ -202,18 +209,24 @@ we can discretize this integral by
 where $\mathbb{M}^E_{i,j} = \int_{C_E} \phi_i^E \phi_j^E d\omega$ and $\mathbb{S}_{i,j}^E =
 \int_{C_E} \nabla \phi_i^E \nabla \phi_j^E d\omega$
 
-Because $\phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} \hat \phi_n \circ F_E$, we have 
-$\mathrm{D}\phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} \mathrm{D}\hat \phi_n(F_E) \circ \mathrm{D} F_E$ 
-and, confusing matrices and differential, $\nabla \phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} 
-{\mathrm{D} F_E}^\top \nabla \hat \phi_n(F_E) $:
-
+\paragraph{Mass matrix:}
+Firstly, because we have $\phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} \hat \phi_n \circ F_E$,
 \begin{equation*}
- \mathbb{M}^E_{i,j} = \int_{C_E} \phi_i^E \phi_j^E d\omega = 
- \frac{|\hat E|}{|E|} \int_{\hat E} \hat \phi_i \hat \phi_j d\hat \omega \cdot 
-|\mathrm{det}(\mathrm{D} F_E^{-1})| = 
-\int_{\hat E} \hat \phi_i \hat \phi_j d\hat \omega =\widehat{\mathbb{M}}_{i,j}
+ \mathbb{M}^E_{i,j} = \int_{C_E} \phi_i^E \phi_j^E d\omega 
+ = \frac{|\hat E|}{|E|} \int_{\hat E} \hat \phi_i \hat \phi_j d\hat \omega \cdot |\mathrm{det} 
+(\mathrm{D} F_E^{-1})| 
+= \int_{\hat E} \hat \phi_i \hat \phi_j d\hat \omega 
+=\widehat{\mathbb{M}}_{i,j}
 \end{equation*}
-and
+Then we just have $\mathbb{M} = \mathrm{diag} ( \widehat{\mathbb{M}}, \dots, \widehat{\mathbb{M}})$.
+
+\paragraph{Stiffness matrix:} Secondly, we just derivate $\phi_i^E$:
+\begin{equation*}
+ \mathrm{D}\phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} \mathrm{D}\hat \phi_n(F_E) \circ \mathrm{D} F_E 
+\qquad \text{and} \qquad \nabla \phi_n^E = \sqrt{\frac{|\hat E|}{|E|}} {\mathrm{D} F_E}^\top 
+\nabla \hat \phi_n(F_E) 
+\end{equation*}
+
 \begin{align*}
  \mathbb{S}_{i,j}^E &= \int_{C_E} \nabla \phi_i^E \cdot \nabla \phi_j^E d\omega = 
 \int_{\hat E} \nabla \hat \phi_i \cdot ( \mathrm{D} F_E{\mathrm{D} F_E}^\top \nabla \hat 
@@ -222,22 +235,40 @@ and
 \right)_{L^2(\hat E)}
 \end{align*}
 
-Of course, those formulae simplify a lot in 1D, but those are general and will be reused. But the 
-one dimension gives:
-\begin{equation*}
- \mathbb{M}^k_{i,j} =  {\widehat{\mathbb{M}}}_{i,j} \qquad \text{and} \qquad
- \mathbb{S}_{i,j}^k =  \frac{4}{h_k^2} \left( \hat \phi_i' , \hat \phi_j ' 
-\right)_{L^2(]-1,1[)} = \frac{4}{h_k^2} \widehat{\mathbb{S}}_{i,j}
-\end{equation*}
-
-Finally, we obtain $(\alpha \mathbb{M} + \mu \mathbb{S})U$ where $\mathbb{M} = \mathrm{diag} ( 
-\mathbb{M}^1, \dots, \mathbb{M}^K)$ and  $\mathbb{S} = \mathrm{diag} 
-(\mathbb{S}^1,\dots,\mathbb{S}^K)$.
+Finally, we obtain $\mathbb{S} = \mathrm{diag} (\mathbb{S}^1,\dots,\mathbb{S}^K)$.
 
 \subsubsection{Flux discretization}
 
 In the same way than Armand's report, we define $\mathbb{F}$ as the matrix describing the flux 
-part. This the most complicated term, and the one wich will be treated here with less generality.
+part. We also define the bound  term $\mathbb{F}^b$. Those are the most complicated terms, wich will 
+be treated here with less generality. But without loss of generality, we can write, for any $E\in 
+\mathcal{E}_h$:
+\begin{equation*}
+ \int_{\partial E} \widehat{\nabla u}_E \cdot \mathbf{n}_E\ v\ d\gamma 
+ = \sum_{d=1}^D \int_{\partial E^d} \widehat{\nabla u}_E \cdot \mathbf{n}_E^d\ v\ d\gamma
+\end{equation*}
+where $\left\{ \partial E^d,\ d=1,\cdot,D \right\}$ are the faces of $E$.
+
+Then we have two cases:
+\begin{itemize}
+ \item $\partial E^d$ is the frontier between two elements,
+ \item $\partial E^d$ is a part of the frontier of the domain $\Omega$.
+\end{itemize}
+Therefore, we have two treat those two cases distinctly.
+
+\paragraph{$\partial E^d$ is the frontier between two elements:}
+
+We can make this separation:
+\begin{align*}
+ \widehat{\nabla u}_E \cdot \mathbf{n}_E 
+ &= \beta \frac{\llbracket u \rrbracket}{\overline{\Delta x}} + \overline{\nabla u(x)} \cdot 
+\mathbf{n} \\
+&= \underbrace{ \left[-\beta \frac{u^+}{\overline{\Delta x}} + \frac{ \nabla u(x)^+ \cdot 
+\mathbf{n}}{2} \right]}_{ \text{interior contribution} } 
++ \underbrace{\left[ \beta \frac{u^-}{\overline{\Delta x}} + \frac{ \nabla u(x)^- \cdot 
+\mathbf{n}}{2} \right]}_{ \text{exterior contribution} }
+\end{align*}
+
 
 \paragraph{flux between interior elements}
 
@@ -275,8 +306,9 @@ Firstly, we cut the integral by faces and we call $E^d$ the neighbor of $E$ by t
 $\partial E^d$:
 \begin{equation*}
  \int_{\partial E} \left( -\frac{\beta}{2} {u^-}_E + \frac{1}{2} \nabla {u^-}_E \cdot \mathbf{n}_E 
-\right) \ v\ d\gamma = \sum_{d=1}^D \int_{\partial E^d} \left( -\frac{\beta}{2} {u^-}_E^d + 
-\frac{1}{2} \nabla {u^-}_E^d \cdot \mathbf{n}_E^d \right) \ \phi_i^E\ d\gamma
+\right) \ v\ d\gamma 
+= \sum_{d=1}^D \int_{\partial E^d} \left( -\frac{\beta}{2} {u^-}_E^d + \frac{1}{2} \nabla {u^-}_E^d 
+\cdot \mathbf{n}_E^d \right) \ \phi_i^E\ d\gamma
 \end{equation*}
 
 In exactly the same way than the self interaction flux, the interaction flux matrice between $E$ 
@@ -290,8 +322,10 @@ Then we can assemble those matrices as $\mathbb{F}^E = \mathrm{row}_{E^d \in \ma
 (\mathbb{F}^{E,E^d})$, where $\mathbb{F}^{E,E^d} = 0$ if $E$ and $E^d$ are not neighbor and 
 $\mathbb{F}^I = \mathrm{col}_{E \in \mathcal{E}_h} 
 (\mathbb{F}^E)$.
-\iffalse
-{\itshape
+
+\vspace{10cm}
+
+
 \begin{align*}
   \int_{\partial E} \widehat{\nabla u}_E \cdot \mathbf{n}_E\ v\ d\gamma &=
   \sum_{d=1}^D \int_{\partial E^d} \widehat{\nabla u}_E \cdot \mathbf{n}_E^d\ v\ d\gamma \\
@@ -310,16 +344,12 @@ last integral:
 \mathbf{n}_E^d \right) \ \phi_i^E\ d\gamma
  \end{multline*}
 
-
-
-
-
 Let be an interior element. In our case, that means we consider $C_k = [x_{k-1},x_k]$ with $1<k<K$. 
 Then we have
 \begin{align*}
  \int_{\partial C_n} \widehat{\nabla u}_k \cdot \mathbf{n}_k\ v\ d\gamma &= \int_{\partial C_n} 
 \left(\frac{\beta}{2} \llbracket u \rrbracket_k + \overline{\nabla u(x)} \cdot \mathbf{n}_k 
-\right)\ v\ d\gamma \\
+\right)\ v\ d\gamma \\self interaction flux
 &= \int_{\partial C_n} \left(\frac{\beta}{2} (u^+_k + u^-_k) + \frac{1}{2} (\nabla u^+_k + \nabla 
 u^-_k) \cdot \mathbf{n}_k \right)\ v\ d\gamma \\
 \end{align*}
@@ -388,21 +418,36 @@ Then, for $j=0,\dots,N$,
 \end{multline*}
 wich can be easily translated as vector product between a row matrix and $U$.
 
+\vspace{10cm}
+
 \paragraph{flux at the bound}
 The flux at the bound is not complicated at all if we consider there is a virtual cell where the 
 solution has the good properties. For example, with Dirichlet conditions, we consider that:
 \begin{itemize}
- \item the virtual solution equals zero on the bound, →which means $\llbracket u \rrbracket = u^+ $,
+ \item the virtual solution equals $u_D$ on the bound, which means $\llbracket u \rrbracket = u^+ 
+- u_D$,
  \item the virtual solution has the same derivative on the bound than the real solution, wich means 
 $\overline{\nabla u} = \nabla u^+$.
 \end{itemize}
-}
-\fi
+
+Then we can re-write the neighbor interaction flux as
+\begin{align*}
+ \int_{\partial E^b} \left( -\frac{\beta}{2} {u^-}_E^b + \frac{1}{2} \nabla {u^-}_E^b \cdot 
+\mathbf{n}_E^b \right) \ \phi_i^E\ d\gamma
+&= \int_{\partial E^b} \left( -\frac{\beta}{2} {u_D}_E^b + \frac{1}{2} \nabla {u^+}_E \cdot 
+\mathbf{n}_E^b \right) \ \phi_i^E\ d\gamma \\
+&= -\frac{\beta}{2} \int_{\partial E^b} {u_D}_E^b \ \phi_i^E\ d\gamma + \int_{\partial E^b} 
+\frac{1}{2} \nabla {u^+}_E \cdot \mathbf{n}_E^b\ \phi_i^E\ d\gamma 
+\end{align*}
+where $\partial E^b$ is the commun part between the cell boundary and the domain boundary.
+This cut means the left term will be add the right term $F$ defined upper as $\mathbb{F}^b$ vector, 
+and the left term as already been computed in the self interaction flux.
+
 \paragraph{}
 At the end wa assembly all the flux matrix $\mathbb{F} = \mathbb{F}^s +\mathbb{F}^I $ and we obtain 
 a system of this shape:
 \begin{equation}
-\left(\alpha \mathbb{M} + \mu (\mathbb{S}-\mathbb{F})\right) U = F
+\left(\alpha \mathbb{M} + \mu (\mathbb{S}-\mathbb{F})\right) U = F + \mathbb{F}^b
 \end{equation}
 Then, to obtain $U$, we just have to invert the matrix $\alpha \mathbb{M} + \mu 
 (\mathbb{S}-\mathbb{F})$ wich is not easy with high dimension, even with iterative algorithm. An 
@@ -455,5 +500,59 @@ We need to process the values $P_n'(1)$ and $P_n'(-1)$. This is easy with Armand
 \end{align*}
 Then we have $P_{2n}'(1) = -P_{2n}'(-1) = n(2n+1)$ and $P_{2n+1}'(1) = P_{2n+1}'(-1) = 1 + n(2n+3)$.
 
+\paragraph{self interaction flux}
+
+the self interaction flux is simply
+\begin{multline*}
+ \mathbb{F}_{i,j}^{k,s} 
+ = \left( \frac{\beta}{2} \phi_j^k(x_k) + \frac{1}{2} \nabla \phi_j^k(x_k) \cdot \mathbf{n}_k(x_k) 
+\right) \phi_i^k(x_k) \\
++ \left( \frac{\beta}{2} \phi_j^k(x_{k-1}) + \frac{1}{2} \nabla \phi_j^k(x_{k-1}) \cdot 
+\mathbf{n}_k(x_{k-1}) \right) \phi_i^k(x_{k-1})
+\end{multline*}
+Finaly, we have
+\begin{multline*}
+ \mathbb{F}_{i,j}^{k,s} = \left( \frac{\beta}{2} \sqrt{\frac{2j+1}{h_k}} + \frac{1}{2} 
+\sqrt{\frac{2j+1}{2}}P_{n}'(1) \right) \sqrt{\frac{2i+1}{h_k}} \\
++ \left( (-1)^j \frac{\beta}{2} \sqrt{\frac{2j+1}{h_k}} - \frac{1}{2} \sqrt{\frac{2j+1}{2}} 
+P_{n}'(-1) \right)(-1)^i \sqrt{\frac{2i+1}{h_k}} 
+\end{multline*}
+except for
+\begin{multline*}
+ \mathbb{F}_{i,j}^{1,s} = \left( \frac{\beta}{2} \sqrt{\frac{2j+1}{h_1}} + \frac{1}{2} 
+\sqrt{\frac{2j+1}{2}}P_{n}'(1) \right) \sqrt{\frac{2i+1}{h_1}} \\
++ \left( (-1)^j \frac{\beta}{2} \sqrt{\frac{2j+1}{h_1}} - \sqrt{\frac{2j+1}{2}} 
+P_{n}'(-1) \right)(-1)^i \sqrt{\frac{2i+1}{h_1}} 
+\end{multline*}
+and
+\begin{multline*}
+ \mathbb{F}_{i,j}^{K,s} = \left( \frac{\beta}{2} \sqrt{\frac{2j+1}{h_K}} + 
+\sqrt{\frac{2j+1}{2}}P_{n}'(1) \right) \sqrt{\frac{2i+1}{h_K}} \\
++ \left( (-1)^j \frac{\beta}{2} \sqrt{\frac{2j+1}{h_K}} - \frac{1}{2} \sqrt{\frac{2j+1}{2}} 
+P_{n}'(-1) \right)(-1)^i \sqrt{\frac{2i+1}{h_K}} 
+\end{multline*}
+
+\paragraph{neighbor interaction flux}
+
+We have
+\begin{align*} 
+\mathbb{F}_{i,j}^{k,k+1} &=
+\left( -\frac{\beta}{2} \phi_j^{k+1}(x_k) + \frac{1}{2} \nabla \phi_j^{k+1}(x_k) \cdot 
+\mathbf{n}_k(x_k) \right) \phi_i^k(x_k)\\
+&= \left(-(-1)^j \frac{\beta}{2} \sqrt{\frac{2j+1}{h_{k+1}}} + \frac{1}{2} 
+\sqrt{\frac{2j+1}{2}}P_{n}'(-1) \right) \sqrt{\frac{2i+1}{h_k}}
+\end{align*}
+and
+\begin{align*} 
+\mathbb{F}_{i,j}^{k,k-1} &=
+\left( -\frac{\beta}{2} \phi_j^{k-1}(x_{k-1}) + \frac{1}{2} \nabla \phi_j^{k-1}(x_{k-1}) \cdot 
+\mathbf{n}_k(x_{k-1}) \right) \phi_i^k(x_{k-1})\\
+&= \left(-\frac{\beta}{2} \sqrt{\frac{2j+1}{h_{k-1}}} - \frac{1}{2} 
+\sqrt{\frac{2j+1}{2}}P_{n}'(1) \right) (-1)^i \sqrt{\frac{2i+1}{h_k}}
+\end{align*}
+
+\paragraph{flux at the bound}
+We have $\mathbb{F}^{b,K}_i = \dfrac{\beta}{2} u_{D,R} \sqrt{\dfrac{2i+1}{h_K}}$ 
+and $\mathbb{F}^{b,1}_i = \dfrac{\beta}{2} u_{D,R} (-1)^i \sqrt{\dfrac{2i+1}{h_K}}$. 
 
 \end{document}
