@@ -12,7 +12,7 @@ E = (k-1)*(N+1);
 %%% left bound
 x = Edge(1);
 for i=0:N
-    bound(i+1) = - beta / dx(k,k) * ul * leg_b(k,i,x);
+    bound(i+1) = beta / dx(k,k) * ul * leg_b(k,i,x);
 end
 for i = 0:N
     for j = 0:N
@@ -93,7 +93,7 @@ end
 %%% right bound
 x = Edge(E2edge(k,2));
 for i=0:N
-    bound(E + i+1) = -beta/dx(k,k) * ur * leg_b(k,i,x);
+    bound(E + i+1) = beta/dx(k,k) * ur * leg_b(k,i,x);
 end
 for i = 0:N
     for j = 0:N

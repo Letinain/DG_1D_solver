@@ -256,7 +256,7 @@ Then we have two cases:
 \end{itemize}
 Therefore, we have two treat those two cases distinctly.
 
-\paragraph{$\partial E^d$ is the frontier between two elements:}
+\paragraph{If $\partial E^d$ is the frontier between two elements:}
 
 We can make this separation:
 \begin{align*}
@@ -269,6 +269,42 @@ We can make this separation:
 \mathbf{n}}{2} \right]}_{ \text{exterior contribution} }
 \end{align*}
 
+Then, if $E^d$ is the neighbor of $E$ by $\partial E^d$, we have to compute, for all $i,j 
+=0,\dots,N$:
+\begin{equation*}
+ \int_{\partial E^d} \left( - \beta \frac{\phi_j^E}{\overline{\Delta x}}  + \frac{1}{2} \nabla 
+\phi_j^E \cdot \mathbf{n}_E \right) \phi_i^E \ d \gamma
+\quad \text{and} \quad
+\int_{\partial E^d} \left( \beta \frac{\phi_j^{E^d}}{\overline{\Delta x}}  + \frac{1}{2} \nabla 
+\phi_j^{E^d} \cdot \mathbf{n}_E \right) \phi_i^E \ d \gamma
+\end{equation*}
+
+\paragraph{If $\partial E^d$ is a part of the frontier of the domain $\Omega$:}
+We have to consider the bound condition. We assume here this is a Dirichlet condition 
+$u|_{\partial \Omega} = g$. That gives us:
+\begin{itemize}
+ \item $u^- = g$,
+ \item $\nabla u(x)^+ = \nabla u(x)^-$ and $\overline{\nabla u(x)} = \nabla u(x)^+$,
+\end{itemize}
+and
+\begin{equation*}
+ \widehat{\nabla u}_E \cdot \mathbf{n}_E 
+ = \underbrace{\left[ -\beta \frac{u^+}{\overline{\Delta x}} + \nabla u(x)^+ \cdot 
+\mathbf{n} \right]}_{\text{flux contribution}}
++ \underbrace{\left[ \beta \frac{g}{\overline{\Delta x}} \right]}_{\text{bound contribution}}
+\end{equation*}
+Then we have to compute, for all $i,j=0,\dots,N$:
+\begin{equation*}
+\int_{\partial E^d} \left( - \beta \frac{\phi_j^E}{\overline{\Delta x}}  + \nabla 
+\phi_j^E \cdot \mathbf{n}_E \right) \phi_i^E \ d \gamma
+\quad \text{and} \quad
+\int_{\partial E^d} \beta \frac{g}{\overline{\Delta x}} \phi_i^E d\gamma.
+\end{equation*}
+
+\paragraph{}
+We assemble all those computations in two matrix $\mathbb{F}$ and $\mathbb{F}^b$.
+
+\iffalse
 
 \paragraph{flux between interior elements}
 
@@ -443,11 +479,12 @@ where $\partial E^b$ is the commun part between the cell boundary and the domain
 This cut means the left term will be add the right term $F$ defined upper as $\mathbb{F}^b$ vector, 
 and the left term as already been computed in the self interaction flux.
 
-\paragraph{}
-At the end wa assembly all the flux matrix $\mathbb{F} = \mathbb{F}^s +\mathbb{F}^I $ and we obtain 
-a system of this shape:
+\fi
+
+\subsubsection{Linear system}
+At the end wa assembly all the matrices and we obtain a system of this shape:
 \begin{equation}
-\left(\alpha \mathbb{M} + \mu (\mathbb{S}-\mathbb{F})\right) U = F + \mathbb{F}^b
+\left(\alpha \mathbb{M} + \mu (\mathbb{S}-\mathbb{F})\right) U = F + \mu \mathbb{F}^b
 \end{equation}
 Then, to obtain $U$, we just have to invert the matrix $\alpha \mathbb{M} + \mu 
 (\mathbb{S}-\mathbb{F})$ wich is not easy with high dimension, even with iterative algorithm. An 
@@ -482,6 +519,13 @@ But due to Armand, the majority part of the computation is already done: $\foral
 As final result, we have $\mathbb{S}_{i,j}^k = \dfrac{2}{{h_k}^2} \sqrt{(2i+1)(2j+1)} \left( P_i' , 
 P_j' \right)_{L^2(]-1,1[)} = \dfrac{2}{{h_k}^2} \mathbb{P}_{i,j}$. Note that result is consistent 
 with Armand's result (pay attention that $\|P_0\| = 2$).
+
+\subsubsection{Stiffness matrix}
+
+We need here to evaluate the basis functions on each frontier. The biggest difficulty is to 
+evaluate effiently every quantity.
+
+\iffalse 
 
 \subsubsection{Flux matrix}
 
@@ -553,6 +597,8 @@ and
 
 \paragraph{flux at the bound}
 We have $\mathbb{F}^{b,K}_i = \dfrac{\beta}{2} u_{D,R} \sqrt{\dfrac{2i+1}{h_K}}$ 
-and $\mathbb{F}^{b,1}_i = \dfrac{\beta}{2} u_{D,R} (-1)^i \sqrt{\dfrac{2i+1}{h_K}}$. 
+and $\mathbb{F}^{b,1}_i = \dfrac{\beta}{2} u_{D,R} (-1)^i \sqrt{\dfrac{2i+1}{h_K}}
+
+\fi
 
 \end{document}

@@ -50,11 +50,11 @@ sol = @(x) x.*(x-1).*poly_eval(r,P,x);
 %    -(x<c) .* (sol(c) - (c-3).*exp(-c));
 %f = @(x) sin(pi / (d-c) * (x+c));
 %f = @(x) cos(pi/2 * (x+a) / (b-a));
-f = @(x) (alpha*sol(x) - mu * (x.*(x-1).*poly_eval(r-2,P_dd,x) + (4*x-2).*poly_eval(r-1,P_d,x) + 2*poly_eval(r,P,x))).*(x<=d) .* (x>=c);
+f = @(x) (mu*sol(x) - alpha * (x.*(x-1).*poly_eval(r-2,P_dd,x) + (4*x-2).*poly_eval(r-1,P_d,x) + 2*poly_eval(r,P,x))).*(x<=d) .* (x>=c);
 
 % mesh parameters
 K = 800; % number of element
-N = 0; % element degree
+N = 3; % element degree
 
 %%
 %%%%%%%%%%%%%%%%%
@@ -105,7 +105,7 @@ Dirac = dirac_vector(K,N,real,zeta,E2edge,Edge,leg_b);
 %%%%%%%%%%
 
 A = alpha * mass + mu * (stiff - flux) + Dirac;
-F = source - mu* bound;
+F = source + mu* bound;
 
 %%%%%%%%%%%%
 % resolution
