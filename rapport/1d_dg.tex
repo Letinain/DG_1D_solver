@@ -601,4 +601,49 @@ and $\mathbb{F}^{b,1}_i = \dfrac{\beta}{2} u_{D,R} (-1)^i \sqrt{\dfrac{2i+1}{h_K
 
 \fi
 
+\section{New problem}
+
+The problem we want to compute now is the following:
+\begin{equation*}
+\alpha u - \mu \Delta u = f + \zeta (g-u) \delta_{\Gamma} \quad \text{on} \ \Omega_S
+\end{equation*}
+where $\Gamma = \partial \Omega$, $\Omega$ is the previous domain and $\Omega_S \supset \Omega$ and 
+$\delta_{\Gamma}$ the Dirac function.
+
+We consider a discretization $\mathcal{E}_h$ of $\Omega_S$ and we follw the same previous steps. 
+Let be $E \in \mathcal{E}_h$. We have:
+\begin{equation*}
+\int_{E} (\mu \nabla u \nabla v + \alpha uv) d\omega - \int_{\partial E} \mu \nabla u \cdot 
+\mathbf{n} \ v\ d\gamma = \int_{E}  f\ v\ d\omega + \int_{E \cap \Gamma} \zeta (g-u)v d\gamma
+\end{equation*}
+We have here three cases:
+\begin{itemize}
+ \item if $E \cap \Gamma = \emptyset$ and $\partial E \cap \partial \Omega_S = \emptyset$ then the 
+previous construction is valid here;
+\item if $\partial E \cap \partial \Omega_S \neq \emptyset$ then a part of the bound has to be 
+treated separatly;
+\item if $E \cap \Gamma \neq \emptyset$ then the last term of the previous equation has to be 
+discretized.
+\end{itemize}
+
+\subsection{if $\partial E \cap \partial \Omega_S \neq \emptyset$}
+We do not know any thing on the bound so we assume that $u^+ = u^-$ and $\nabla u^+ = \nabla u^-$. 
+Then we have $\llbracket u \rrbracket = 0$ , $\overline{\nabla u} = \nabla u^+$ and
+$$
+\widehat{\nabla u} \cdot \mathbf{n} = \nabla u^+ \cdot \mathbf{n}.
+$$
+The following computation is, for all $i,j=0,\dots,N$:
+$$
+\int_{\partial E^b} \nabla \phi_j^E \cdot \mathbf{n} \ \phi_i^E d\gamma
+$$
+
+\subsection{if $E \cap \Gamma \neq \emptyset$}
+We separate the integral in two terms: one is being part of the matrix and the other one is being 
+par of the right side term:
+$$
+\int_{E \cap \Gamma} \phi_j^E \ \phi_i^E \ d\gamma 
+\quad \text{and} \quad
+\int_{E \cap \Gamma} g \ \phi_i^E \ d\gamma 
+$$
+
 \end{document}
