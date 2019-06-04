@@ -4,63 +4,45 @@
 % conditions.
 %
 % The equation solved is:
-% - alpha u'' + mu u = f
+% - mu u'' + alpha u = f
 % on the interval [a,b]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 clear variables;
 close all;
 
-% simulation domain
-a = -100; b = 101;
-simulation = [a b];
-
 % real domain
 c = 0; d = 1;
 real = [c d];
 
-% Problem parameters
-alpha = 1; mu = 1;
-%mu = 1/2 * ((d-c)/pi)^2;
-%mu = 2/pi^2;
+% [f,sol,alpha,mu,dirichlet_real] = sin_poisson(real);
+[f,sol,alpha,mu,dirichlet_real] = cos_poisson(real);
 
+%%
+% simulation domain
+a = -10; b = 10;
+simulation = [a b];
+
+% Dirichlet simulation
+ul = rand; ur = rand;
+dirichlet_s = [ul ur];
+
+
+%%
 % Arbitrary parameters
-beta = 1;
-zeta = [-1000 -1000];
+beta = 10;
+zeta = 1000 * [1 1];
 
-% Dirichlet
-ul = 0; ur = 0;
-dirichlet = [ul ur];
-
-% solution
-%sol = @(x) (x-1).*(exp(-x)-1);
-%sol = @(x) sin(pi*x);
-%sol = @(x) cos(pi/2*x);
-
-r = 10;
-P = 10*rand(1,r+1)-5;
-P_d = poly_deriv(P);
-P_dd = poly_deriv(P_d);
-sol = @(x) x.*(x-1).*poly_eval(r,P,x);
-
-
-
-% source
-%f = @(x) (sol(x) - (x-3).*exp(-x)) .* (x<=d) .* (x>=c) - (x>d) .* (sol(d) - (d-3).*exp(-d))...
-%    -(x<c) .* (sol(c) - (c-3).*exp(-c));
-%f = @(x) sin(pi / (d-c) * (x+c));
-%f = @(x) cos(pi/2 * (x+a) / (b-a));
-f = @(x) (mu*sol(x) - alpha * (x.*(x-1).*poly_eval(r-2,P_dd,x) + (4*x-2).*poly_eval(r-1,P_d,x) + 2*poly_eval(r,P,x))).*(x<=d) .* (x>=c);
-
+%%
 % mesh parameters
-K = 800; % number of element
-N = 3; % element degree
+prec = 24; % number of element
+N = 4; % element degree
 
 %%
 %%%%%%%%%%%%%%%%%
 % mesh generation
 %%%%%%%%%%%%%%%%%
-[Edge,E2edge,E2size,E2E,normal] = mesh_generation(K,simulation,"regular");
+[Edge,E2edge,E2size,E2E,normal,K] = mesh_generation(prec,real,simulation,"regular");
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % basis function generation
@@ -86,7 +68,7 @@ stiff = stiff_matrix(K,N,E2size);
 % flux matrix
 %%%%%%%%%%%%%
 
-[flux,bound] = flux_matrix(K,N,beta,dirichlet,leg_b,dx,leg_d,Edge,E2edge);
+[flux,bound] = flux_matrix(K,N,beta,dirichlet_s,leg_b,dx,leg_d,Edge,E2edge);
 
 %%%%%%%%%%%%%
 % source term
@@ -98,20 +80,32 @@ source = source_vector(K,N,f,leg_b,Edge,E2edge);
 % Dirac term
 %%%%%%%%%%%%
 
-Dirac = dirac_vector(K,N,real,zeta,E2edge,Edge,leg_b);
+[Dirac_mat,Dirac_vec] = dirac_term(K,N,real,dirichlet_real,zeta,E2edge,Edge,leg_b);
 
 %%%%%%%%%%
 % Assembly
 %%%%%%%%%%
 
-A = alpha * mass + mu * (stiff - flux) + Dirac;
-F = source + mu* bound;
+A = alpha * mass + mu * (stiff - flux) + Dirac_mat;
+F = source + mu* bound + Dirac_vec;
 
 %%%%%%%%%%%%
 % resolution
 %%%%%%%%%%%%
 
 U = A\F;
+
+%%
+%%%%%%%%%%%%%
+% total error
+%%%%%%%%%%%%%
+pt = 10000;
+if (~exist('err','var'))
+    err = [];
+end
+err = [err;total_error(N,real,Edge,leg_b,U,pt,sol)];
+
+
 
 %%
 %%%%%%
@@ -124,13 +118,6 @@ fplot(sol,real,'r');
 view_real(K,N,real,Edge,E2edge,leg_b,U,pt_E);
 hold on;
 fplot(sol,real,'r')
-
-%%
-%%%%%%%%%%%%%
-% total error
-%%%%%%%%%%%%%
-pt = 10000;
-total_error(N,real,Edge,leg_b,U,pt,sol);
 
 %%
 %%%%%%%%%%%%
