@@ -1,16 +1,20 @@
-function [Edge,E2edge,E2size,E2E,normal] = mesh_generation(K,simulation,method)
+function [Edge,E2edge,E2size,E2E,normal,K] = mesh_generation(prec,real,simulation,method)
 
 a = simulation(1);
 b = simulation(2);
 
 % subdivion of the interval
 if (method == "regular")
-    Edge = linspace(a,b,K+1); % regular subdivision
+    Edge = linspace(a,b,prec+1); % regular subdivision
 elseif ( method == "random")
-    Edge = sort([a , a + (b-a)*rand(1,K-1) , b]); % random subdivision
+    Edge = sort([a , a + (b-a)*rand(1,prec-1) , b]); % random subdivision
+elseif ( method == "mid")
+    Edge = spec_1(prec,real,simulation);
 else
     error('Bad third argument. It can be "regular" or "random"');
 end
+
+K = length(Edge)-1;
 
 % element to edge matching array
 E2edge = zeros(K,2);
