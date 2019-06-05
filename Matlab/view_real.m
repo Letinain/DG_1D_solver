@@ -17,7 +17,7 @@ if (kc==kd)
     X = linspace(c,d,pt);
 else
     X = zeros((kd-kc+1)*pt,1);
-    X(1:pt) = linspace(Edge(E2edge(kc,1)),Edge(E2edge(kd,2)),pt);
+    X(1:pt) = linspace(c,Edge(E2edge(kc,2)),pt);
     for i=2:kd-kc
         X((i-1)*pt+1:i*pt) = linspace(Edge(E2edge(kc+i-1,1)),Edge(E2edge(kc+i-1,2)),pt);
     end
