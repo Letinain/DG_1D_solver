@@ -8,7 +8,7 @@
 % on the interval [a,b]
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-clear variables;
+% clear variables;
 close all;
 
 % real domain
@@ -16,27 +16,31 @@ c = 0; d = 1;
 real = [c d];
 
 % [f,sol,alpha,mu,dirichlet_real] = sin_poisson(real);
-[f,sol,alpha,mu,dirichlet_real] = cos_poisson(real);
+% [f,sol,alpha,mu,dirichlet_real] = cos_poisson(real);
+
 
 %%
 % simulation domain
-a = -10; b = 10;
-simulation = [a b];
-
+a = 0; b = 1;
+% simulation = [a b];
+simulation = real;
+[f,sol,alpha,mu,dirichlet_real] = random_poly_poisson(10,real);
 % Dirichlet simulation
-ul = rand; ur = rand;
-dirichlet_s = [ul ur];
+ul = 0; ur = rand;
+% dirichlet_s = [ul ur];
+dirichlet_s = dirichlet_real;
+
 
 
 %%
 % Arbitrary parameters
-beta = 10;
-zeta = 1000 * [1 1];
+beta = 1;
+zeta = 0 * [0 1];
 
 %%
 % mesh parameters
-prec = 24; % number of element
-N = 4; % element degree
+prec = 20; % number of element
+N = 0; % element degree
 
 %%
 %%%%%%%%%%%%%%%%%
@@ -69,6 +73,7 @@ stiff = stiff_matrix(K,N,E2size);
 %%%%%%%%%%%%%
 
 [flux,bound] = flux_matrix(K,N,beta,dirichlet_s,leg_b,dx,leg_d,Edge,E2edge);
+% [flux,bound] = flux_matrix_no_bound(K,N,beta,dirichlet_s,leg_b,dx,leg_d,Edge,E2edge);
 
 %%%%%%%%%%%%%
 % source term
@@ -89,6 +94,7 @@ source = source_vector(K,N,f,leg_b,Edge,E2edge);
 A = alpha * mass + mu * (stiff - flux) + Dirac_mat;
 F = source + mu* bound + Dirac_vec;
 
+%%
 %%%%%%%%%%%%
 % resolution
 %%%%%%%%%%%%

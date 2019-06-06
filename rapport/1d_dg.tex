@@ -602,6 +602,76 @@ and $\mathbb{F}^{b,1}_i = \dfrac{\beta}{2} u_{D,R} (-1)^i \sqrt{\dfrac{2i+1}{h_K
 \fi
 
 
+
+\subsection{Results}
+
+Here are the order of convergence of the method:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|c|c|c|c|}
+\hline
+ & $L^1$ & $L^2$ & $L^\infty$ \\ \hline
+N = 0 & 0.9983 & 0.9973 & 0.9999 \\ \hline
+N = 1 & 1.9980 & 1.9981 & 1.9975 \\ \hline
+N = 2 & 2.0186 & 2.0177 & 2.0188 \\ \hline
+N = 3 & 3.9858 & 3.9864 & 3.9769 \\ \hline
+N = 4 & 4.0496 & 4.0436 & 4.0397 \\ \hline
+N = 5 & 5.9529 & 5.9575 & 5.9269 \\ \hline
+N = 6 & 6,1840 & 6,1768 & 6,2155 \\ \hline
+\multicolumn{1}{|l|}{N = 7} & \multicolumn{1}{l|}{7.8522} & \multicolumn{1}{l|}{7.8686} & 
+\multicolumn{1}{l|}{7.7576} \\ \hline
+\end{tabular}
+\caption{Convergence order with sine}
+\label{tab:my-table}
+\end{table}
+
+\section{New problem}
+
+The problem we want to compute now is the following:
+\begin{equation*}
+\alpha u - \mu \Delta u = f + \zeta (g-u) \delta_{\Gamma} \quad \text{on} \ \Omega_S
+\end{equation*}
+where $\Gamma = \partial \Omega$, $\Omega$ is the previous domain and $\Omega_S \supset \Omega$ and 
+$\delta_{\Gamma}$ the Dirac function.
+
+We consider a discretization $\mathcal{E}_h$ of $\Omega_S$ and we follw the same previous steps. 
+Let be $E \in \mathcal{E}_h$. We have:
+\begin{equation*}
+\int_{E} (\mu \nabla u \nabla v + \alpha uv) d\omega - \int_{\partial E} \mu \nabla u \cdot 
+\mathbf{n} \ v\ d\gamma = \int_{E}  f\ v\ d\omega + \int_{E \cap \Gamma} \zeta (g-u)v d\gamma
+\end{equation*}
+We have here three cases:
+\begin{itemize}
+ \item if $E \cap \Gamma = \emptyset$ and $\partial E \cap \partial \Omega_S = \emptyset$ then the 
+previous construction is valid here;
+\item if $\partial E \cap \partial \Omega_S \neq \emptyset$ then a part of the bound has to be 
+treated separatly;
+\item if $E \cap \Gamma \neq \emptyset$ then the last term of the previous equation has to be 
+discretized.
+\end{itemize}
+
+\subsection{if $\partial E \cap \partial \Omega_S \neq \emptyset$}
+We do not know any thing on the bound so we assume that $u^+ = u^-$ and $\nabla u^+ = \nabla u^-$. 
+Then we have $\llbracket u \rrbracket = 0$ , $\overline{\nabla u} = \nabla u^+$ and
+$$
+\widehat{\nabla u} \cdot \mathbf{n} = \nabla u^+ \cdot \mathbf{n}.
+$$
+The following computation is, for all $i,j=0,\dots,N$:
+$$
+\int_{\partial E^b} \nabla \phi_j^E \cdot \mathbf{n} \ \phi_i^E d\gamma
+$$
+
+\subsection{if $E \cap \Gamma \neq \emptyset$}
+We separate the integral in two terms: one is being part of the matrix and the other one is being 
+par of the right side term:
+$$
+\int_{E \cap \Gamma} \phi_j^E \ \phi_i^E \ d\gamma 
+\quad \text{and} \quad
+\int_{E \cap \Gamma} g \ \phi_i^E \ d\gamma 
+$$
+
+
 \section{Armand's code}
 
 We check the Armand's code order with the optimal given $\beta$:
@@ -618,8 +688,6 @@ Here are the error on the solution, with $\alpha = 0$, $\mu = 1$, on $[-2,2]\tim
 $$
 u(x,y) = \sin (\pi x) \sin(\pi y) \quad, \quad f(x,y) = 2\pi^2 \sin (\pi x) \sin(\pi y)
 $$
-
-
 
 
 \end{document}
