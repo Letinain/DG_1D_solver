@@ -7,6 +7,5 @@ end
 
 Y = modal_function(leg_b,N,Edge,U,X);
 
-figure;
 plot(X,Y);
 end

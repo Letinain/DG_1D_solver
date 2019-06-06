@@ -6,9 +6,11 @@ d = real(2);
 alpha = 1;
 mu = 1;
 
+k = 50;
+
 dirichlet = [0 0];
 
-sol = @(x) sin(pi / (d-c) * (x+c));
-f = @(x) (1+(pi/(d-c))^2)*sin(pi / (d-c) * (x+c));
+sol = @(x) sin(k * pi / (d-c) * (x+c));
+f = @(x) (1+ k^2 * (pi/(d-c))^2)*sin(k * pi / (d-c) * (x+c));
 
 end

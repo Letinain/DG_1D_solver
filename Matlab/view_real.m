@@ -24,7 +24,7 @@ else
     X((kd-kc)*pt+1:(kd-kc+1)*pt) = linspace(Edge(E2edge(kd,1)),d,pt);
 end
 Y = modal_function(leg_b,N,Edge,U,X);
-figure;
+
 plot(X,Y);
 
 end

@@ -34,7 +34,9 @@ end
 if (Edge_right(end)>b)
     Edge_right = Edge_right(1:end-1);
 end
-Edge_right(end) = b;
+if (~isempty(Edge_right)) 
+    Edge_right(end) = b;
+end
 
 
 Edge = [Edge_left,Edge_mid,Edge_right];

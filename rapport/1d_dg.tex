@@ -12,7 +12,7 @@
 \usepackage[pdftex]{graphicx}
 \usepackage{ stmaryrd }
 \usepackage{fullpage}
-
+\usepackage{multirow}
 \usepackage{hyperref}
 
 \title{1D DG method}
@@ -688,6 +688,27 @@ Here are the error on the solution, with $\alpha = 0$, $\mu = 1$, on $[-2,2]\tim
 $$
 u(x,y) = \sin (\pi x) \sin(\pi y) \quad, \quad f(x,y) = 2\pi^2 \sin (\pi x) \sin(\pi y)
 $$
+
+
+\begin{table}[]
+\centering
+\caption{}
+\label{tab:my-table}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|l|l|}
+\hline
+\multirow{2}{*}{} & \multicolumn{2}{c|}{1/2} & \multicolumn{2}{c|}{1/4} & \multicolumn{2}{c|}{1/8} & \multicolumn{2}{c|}{1/16} & \multicolumn{2}{c|}{1/32} & \multicolumn{2}{l|}{1/64} \\ \cline{2-13} 
+ & $L^2$ & $L^\infty$ & $L^2$ & $L^\infty$ & $L^2$ & $L^\infty$ & $L^2$ & $L^\infty$ & $L^2$ & $L^\infty$ & $L^2$ & $L^\infty$ \\ \hline
+0 & 2.90 & 1.44 & 1.105 & 0.856 & 0.848 & 0.585 & 0.4827 & 0.3377 & 0.1795 & 0.1818 &  &  \\ \hline
+1 & 1.232 & 1.145 & 0.261 & 0.354 & 7.26e-02 & 1.04e-01 & 1.63e-02 & 2.63e-02 & 1.89e-03 & 6.52e-03 &  &  \\ \hline
+2 & 2.68e-01 & 1.56e-01 & 1.35e-01 & 6.87e-02 & 2.87e-02 & 1.45e-02 & 6.86e-03 & 3.30e-03 & 1.69e-03 & 8.33e-04 &  &  \\ \hline
+3 & 1.90e-01 & 1.35e-01 & 1.44e-02 & 6.34e-03 & 7.35e-04 & 5.18e-04 & 5.90e-05 & 5.35e-05 & 5.55e-05 & 4.31e-05 &  &  \\ \hline
+4 & 7.22e-03 & 2.98e-03 & 7.61e-04 & 4.96e-04 & 3.22e-04 & 1.92e-04 & 1.56e-04 & 1.08e-04 & 1.40e-04 & 1.05e-04 &  &  \\ \hline
+5 & 5.67e-03 & 2.40e-03 & 2.40e-04 & 2.02e-04 & 2.36e-04 & 1.61e-04 & 4.73e-05 & 3.11e-05 & 1.72e-04 & 1.25e-04 &  &  \\ \hline
+6 &  &  &  &  &  &  &  &  &  &  &  &  \\ \hline
+\end{tabular}%
+}
+\end{table}
 
 
 \end{document}
