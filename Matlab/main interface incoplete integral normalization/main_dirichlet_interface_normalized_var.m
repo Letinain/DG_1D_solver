@@ -6,19 +6,19 @@ BETA = [1 2 4 6 10 14 20 26 34 42];
 a = 0; b = 1;
 simulation = [a b];
 
-N = 1;
-prec = 10;
-
-beta = BETA(N+1);
-
 tol = 1e-5;
 pas = 0.9;
 
 n2 = floor(log(tol)/log(pas))+1;
 
-mem_edge = zeros(n2-n1+1,3);
-err = zeros(n2-n1+1,3);
-cond = zeros(n2-n1+1,1);
+N = 3;
+beta = BETA(N+1);
+
+prec = 2.^5;
+
+mem_edge = zeros(n2+1,3);
+err = zeros(n2+1,3);
+cond = zeros(n2+1,1);
 
 parfor i = 0:n2
     
@@ -26,7 +26,7 @@ parfor i = 0:n2
     
     [f,sol,alpha,mu,dirichlet] = sin_poisson(5,real);
     
-    [leg_b,leg_d,dx] = basis_function(N,E2edge,Edge,E2size);
+    [leg_b,leg_d,dx] = basis_function_interface_normalized(N,E2edge,Edge,E2size,E2bound,real);
     
     % solver
     [U,A,F] = solver_DG_dirichlet_interface(K,N,real,alpha,mu,beta,f,dirichlet,leg_b,leg_d,dx,Edge,E2edge,E2E,E2size,E2bound,normal);
@@ -50,9 +50,11 @@ end
 e1 = mem_edge(1,1);
 e2 = mem_edge(1,3);
 
-figure;
+fig = figure(1);
+clf;
 
 subplot(3,2,1);
+title(sprintf('N = %d, prec = %d, dx = %.2e',N,prec,1/prec));
 plot(err);
 xlabel("iteration");
 ylabel("error");
@@ -73,18 +75,19 @@ xlabel("ratio C-/C");
 ylabel("error");
 
 subplot(3,2,5);
-plot(n1:n2,mem_edge);
+plot(0:n2,mem_edge);
 xlabel("iteration");
 ylabel("interface x position");
 
 subplot(3,2,6);
-plot(n1:n2,(mem_edge(:,2)-e1)/(e2-e1));
+plot(0:n2,(mem_edge(:,2)-e1)/(e2-e1));
 xlabel("iteration");
 ylabel("ratio C-/C");
 
-% calcul prop de mauvis conditionnement
-lgcond = log(cond)/log(10);
-D2lgcond = lgcond(3:end) + lgcond(1:end-2) - 2*lgcond(2:end-1);
-[~,ind] = max(D2lgcond);
-prop_cond = 
 
+% calcul prop de mauvis conditionnement
+n_max_d = floor(n2/2);
+lgcond = log(cond)/log(10);
+D2lgcond = lgcond(3:n_max_d) + lgcond(1:n_max_d-2) - 2*lgcond(2:n_max_d-1);
+[~,ind] = max(D2lgcond);
+cut_ratio_cond = (mem_edge(ind+1,2)-e1)/(e2-e1);

@@ -30,7 +30,7 @@ for cj = 1:6
             
             [f,sol,alpha,mu,dirichlet] = sin_poisson(5,real);
             
-            [leg_b,leg_d,dx] = basis_function_interface(N,E2edge,Edge,E2size,real);
+            [leg_b,leg_d,dx] = basis_function_interface_normalized(N,E2edge,Edge,E2size,E2bound,real);
             
             % solver
             [U,A,F] = solver_DG_dirichlet_interface(K,N,real,alpha,mu,beta,f,dirichlet,leg_b,leg_d,dx,Edge,E2edge,E2E,E2size,E2bound,normal);
