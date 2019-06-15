@@ -903,4 +903,9 @@ We observe that every condition numbers increases in the same similar way. But
 we can see a big difference between the basic approach / normalized approach 
 and the bounding box approach wich seems have better error results.
 
+However, the methods does not seem to be high order method. For example, with 
+7-order polynomials and a bounding box of $120\%$, the method order is $3.5$ 
+average. There is no differences between the normalized and the basic method 
+unless the higher matrix condition number in normalized method.
+
 \end{document}
