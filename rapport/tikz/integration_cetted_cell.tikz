@@ -1,0 +1,45 @@
+\begin{tikzpicture}
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=none] (0) at (-5, -4) {};
+		\node [style=none] (1) at (-5, 5) {};
+		\node [style=none] (2) at (4, 5) {};
+		\node [style=none] (3) at (4, -4) {};
+		\node [style=none] (4) at (-5, 2) {};
+		\node [style=none] (5) at (-1, 5) {};
+		\node [style=none] (7) at (4, 0) {};
+		\node [style=none] (8) at (4, -3) {};
+		\node [style=none] (9) at (-2, 2) {};
+		\node [style=none] (10) at (-1, 3) {};
+		\node [style=none] (11) at (0, 2) {};
+		\node [style=none] (12) at (-1, 1) {};
+		\node [style=none] (13) at (4, 2) {};
+		\node [style=none] (14) at (-5, 0) {};
+		\node [style=none] (15) at (-5, -3) {};
+		\node [style=none] (16) at (-1, -4) {};
+		\node [style=none] (17) at (2, 4) {};
+		\node [style=none] (18) at (3, 4) {};
+		\node [style=none] (19) at (-4, 1) {-};
+		\node [style=none] (20) at (-4.25, 4.25) {+};
+		\node [style=none] (21) at (-0.5, 1.5) {+};
+		\node [style=none] (22) at (2.5, 4) {+};
+		\node [style=none] (23) at (1.5, -2) {+};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw (1.center) to (2.center);
+		\draw (2.center) to (3.center);
+		\draw (3.center) to (0.center);
+		\draw (0.center) to (1.center);
+		\draw (5.center) to (4.center);
+		\draw [in=180, out=-165, looseness=7.75] (7.center) to (8.center);
+		\draw [bend left=45, looseness=1.25] (9.center) to (10.center);
+		\draw [bend left=45, looseness=1.25] (10.center) to (11.center);
+		\draw [bend left=45, looseness=1.25] (11.center) to (12.center);
+		\draw [bend left=45, looseness=1.25] (12.center) to (9.center);
+		\draw [style=Dashed] (4.center) to (13.center);
+		\draw [style=Dashed] (7.center) to (14.center);
+		\draw [style=Dashed] (15.center) to (8.center);
+		\draw [style=Dashed] (5.center) to (16.center);
+		\draw [bend left=90, looseness=1.25] (17.center) to (18.center);
+		\draw [bend right=90, looseness=1.25] (17.center) to (18.center);
+	\end{pgfonlayer}
+\end{tikzpicture}

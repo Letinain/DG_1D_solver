@@ -27,10 +27,9 @@ indice = 0;
 
 bb = [1 1.2];
 
-parfor i=0:n2
-    % mesh generation
-    [Edge,E2edge,E2size,E2E,E2bound,normal,K] = mesh_generation_interface_bb(2^i,simulation,real,bb);
-    
+[Edge,E2edge,E2size,E2E,E2bound,normal,K] = mesh_generation_interface_bb(1,simulation,real,bb);
+
+for i=0:n2
     % basis function generation
     [leg_b,leg_d,dx] = basis_function_interface(N,E2edge,Edge,E2size,real);
     
@@ -41,6 +40,9 @@ parfor i=0:n2
     err(i+1,:) = total_error(N,real,Edge,leg_b,U,10000,sol);
     
     mem_edge(i+1,:) = [Edge(1),c,Edge(2),Edge(end-1),d,Edge(end)];
+    
+%     [Edge,E2edge,E2size,E2E,E2bound,normal,K] = mesh_division_interface_bb(2,Edge,real,bb);
+    [Edge,E2edge,E2size,E2E,E2bound,normal,K] = mesh_division_interface_constant_bb(2,Edge,real,bb);
     
 %     figure(1);
 %     clf;

@@ -6,7 +6,7 @@ real = [c d];
 
 % n = 1;
 % [f,sol,alpha,mu,dirichlet] = random_poly_poisson(n,real);
-[f,sol,alpha,mu,dirichlet] = sin_poisson(2,real);
+[f,sol,alpha,mu,dirichlet] = sin_poisson(5,real);
 % n = 1;
 % sol = @(x) x.^n;
 % f = @(x) sol(x)-n*(n-1)*x.^(n-2);

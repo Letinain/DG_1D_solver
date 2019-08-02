@@ -13,7 +13,7 @@ n2 = floor(log(tol)/log(pas))+1;
 
 prec = 1024;
 
-N = 6;
+N = 2;
 beta = BETA(N+1);
 
 mem_edge = zeros(n2+1,3);

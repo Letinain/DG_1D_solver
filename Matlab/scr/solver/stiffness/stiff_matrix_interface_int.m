@@ -1,4 +1,4 @@
-function stiff = stiff_matrix_interface(K,N,real,leg_d,Edge,E2edge,E2size,E2bound)
+function stiff = stiff_matrix_interface_int(K,N,real,leg_d,Edge,E2edge,E2size,E2bound,gauss)
 
 stiff_ref = stiff_matrix_ref(N);
 
@@ -16,10 +16,11 @@ for k=1:K
             x1 = Edge(E2edge(k,1));
             x2 = real(2);
         end
+        points = (x2-x1)/2 * gauss(1,:) + (x2+x1)/2;
         for i=0:N
             for j=0:N
                 f = @(x) leg_d(k,i,x) .* leg_d(k,j,x);
-                stiff(E +i+1,E +j+1) = integral(f,x1,x2);
+                stiff(E +i+1,E +j+1) = (x2-x1)/2 * gauss_legendre_1d(f,points,gauss(2,:));
              %   stiff(E +j+1,E +i+1) = stiff(E +i+1,E +j+1);
             end
         end

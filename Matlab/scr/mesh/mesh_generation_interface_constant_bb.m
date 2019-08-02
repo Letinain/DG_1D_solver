@@ -1,4 +1,7 @@
-function [Edge,E2edge,E2size,E2E,E2bound,normal,K] = mesh_generation_interface_bb(prec,simulation,real,bb)
+function [Edge,E2edge,E2size,E2E,E2bound,normal,K] = mesh_generation_interface_constant_bb(prec,simulation,real,bb)
+% prec : integer 
+%simulation, real, bb = [double double]
+
 
 s1 = simulation(1);
 s2 = simulation(2);
@@ -18,8 +21,8 @@ end
 
 Edge = Edge(ed1:ed2);
 
-Edge(1) = max(Edge(2) - bb(1)*(Edge(2)-i1),Edge(1));
-Edge(end) = min(Edge(end-1) + bb(2)*(i2-Edge(end-1)),Edge(end));
+Edge(1) = Edge(2) - bb(1)*(Edge(2)-i1);
+Edge(end) = Edge(end-1) + bb(2)*(i2-Edge(end-1));
 
 K = length(Edge)-1;
 

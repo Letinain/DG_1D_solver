@@ -1,0 +1,76 @@
+\begin{tikzpicture}
+	\begin{pgfonlayer}{nodelayer}
+		\node [style=none] (1) at (2, 0) {};
+		\node [style=none] (2) at (2, 4) {};
+		\node [style=none] (3) at (-2, 0) {};
+		\node [style=none] (4) at (-2, 4) {};
+		\node [style=none] (5) at (-2, 1.75) {};
+		\node [style=none] (6) at (-0.25, 1.75) {};
+		\node [style=none] (7) at (-0.25, 0) {};
+		\node [style=none] (8) at (3, 2) {};
+		\node [style=none] (9) at (5, 4) {};
+		\node [style=none] (10) at (5, 0) {};
+		\node [style=none] (11) at (10, 3) {};
+		\node [style=none] (12) at (10, 7) {};
+		\node [style=none] (13) at (6, 3) {};
+		\node [style=none] (14) at (6, 7) {};
+		\node [style=none] (15) at (6, 4.75) {};
+		\node [style=none] (16) at (7.75, 4.75) {};
+		\node [style=none] (17) at (7.75, 3) {};
+		\node [style=none] (18) at (10, -3) {};
+		\node [style=none] (19) at (10, 1) {};
+		\node [style=none] (20) at (6, -3) {};
+		\node [style=none] (21) at (6, 1) {};
+		\node [style=none] (22) at (6, -1.25) {};
+		\node [style=none] (23) at (7.75, -1.25) {};
+		\node [style=none] (24) at (7.75, -3) {};
+		\node [style=none] (25) at (6, 5) {};
+		\node [style=none] (26) at (8, 3) {};
+		\node [style=none] (27) at (8, 7) {};
+		\node [style=none] (28) at (10, 5) {};
+		\node [style=none] (29) at (6, -2.125) {};
+		\node [style=none] (30) at (6.875, -1.25) {};
+		\node [style=none] (31) at (7.75, -2.125) {};
+		\node [style=none] (32) at (6.875, -3) {};
+		\node [style=none] (33) at (0, -1) {Bounding Box};
+		\node [style=none] (34) at (10, 2) {Quadcell subdivision};
+		\node [style=none] (35) at (9.5, 2.5) {};
+		\node [style=none] (36) at (9.5, 1.5) {};
+		\node [style=none] (37) at (8.5, 4.75) {};
+		\node [style=none] (38) at (7.25, -1.75) {};
+		\node [style=none] (39) at (0, 0.75) {};
+		\node [style=none] (40) at (0, -0.5) {};
+	\end{pgfonlayer}
+	\begin{pgfonlayer}{edgelayer}
+		\draw (1.center) to (2.center);
+		\draw (2.center) to (4.center);
+		\draw [in=90, out=-90] (4.center) to (3.center);
+		\draw (3.center) to (1.center);
+		\draw [in=165, out=-30, looseness=2.00] (5.center) to (7.center);
+		\draw [style=Dashed] (5.center) to (6.center);
+		\draw [style=Dashed] (6.center) to (7.center);
+		\draw (11.center) to (12.center);
+		\draw (12.center) to (14.center);
+		\draw [in=90, out=-90] (14.center) to (13.center);
+		\draw (13.center) to (11.center);
+		\draw [in=165, out=-30, looseness=2.00] (15.center) to (17.center);
+		\draw [style=Dashed] (15.center) to (16.center);
+		\draw [style=Dashed] (16.center) to (17.center);
+		\draw (18.center) to (19.center);
+		\draw (19.center) to (21.center);
+		\draw [in=90, out=-90] (21.center) to (20.center);
+		\draw (20.center) to (18.center);
+		\draw [in=165, out=-30, looseness=2.00] (22.center) to (24.center);
+		\draw [style=Dashed] (22.center) to (23.center);
+		\draw [style=Dashed] (23.center) to (24.center);
+		\draw [style=arrow] (8.center) to (9.center);
+		\draw [style=arrow] (8.center) to (10.center);
+		\draw [style=red] (25.center) to (28.center);
+		\draw [style=red] (27.center) to (26.center);
+		\draw [style=red] (29.center) to (31.center);
+		\draw [style=red] (30.center) to (32.center);
+		\draw [style=arrow] (35.center) to (37.center);
+		\draw [style=arrow] (36.center) to (38.center);
+		\draw [style=arrow, bend right=60, looseness=1.50] (40.center) to (39.center);
+	\end{pgfonlayer}
+\end{tikzpicture}
